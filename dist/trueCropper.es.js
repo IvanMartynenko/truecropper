@@ -1,19 +1,19 @@
 var _ = Object.defineProperty;
 var P = (n, t, e) => t in n ? _(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
 var h = (n, t, e) => (P(n, typeof t != "symbol" ? t + "" : t, e), e);
-const u = "truecropper", w = {
-  base: u,
-  img: `${u}__image`,
-  background: `${u}__background`,
-  new: `${u}__new-selection`,
-  selection: `${u}__selection`,
-  handle: `${u}__handle`,
-  hanleds: `${u}__handles`,
-  valueX: `${u}X`,
-  valueY: `${u}Y`,
-  valueWidth: `${u}Width`,
-  valueHeight: `${u}Height`,
-  valueStatus: `${u}Status`
+const g = "truecropper", u = {
+  base: g,
+  img: `${g}__image`,
+  background: `${g}__background`,
+  new: `${g}__new-selection`,
+  selection: `${g}__selection`,
+  handle: `${g}__handle`,
+  hanleds: `${g}__handles`,
+  valueX: `${g}X`,
+  valueY: `${g}Y`,
+  valueWidth: `${g}Width`,
+  valueHeight: `${g}Height`,
+  valueStatus: `${g}Status`
 }, q = {
   srcEmpty: "Image src not provided",
   elementNotFound: "Unable to find element",
@@ -60,11 +60,11 @@ class x extends Error {
     return new this(r, a);
   }
 }
-class g extends Error {
+class w extends Error {
   constructor(e) {
     super(e);
     h(this, "data");
-    Object.setPrototypeOf(this, g.prototype), this.name = "TrueCropperOptionsError", this.data = null;
+    Object.setPrototypeOf(this, w.prototype), this.name = "TrueCropperOptionsError", this.data = null;
   }
   static aspectRatio(e, i, s) {
     const o = `The specified aspect ratio (${i}) and calculated minimum dimensions (width/height = ${e}) are greater than (${s}). This might be due to a rounding error on the server side or incorrect minimum sizes.`;
@@ -84,10 +84,10 @@ const Z = (n) => {
     t = n;
   if (!(t instanceof HTMLImageElement))
     throw new y("srcEmpty");
-  const e = t.parentElement;
-  if (!e || !e.classList.contains(w.base))
+  let e = t.parentElement;
+  if (!e)
     throw new y("parentNotContainDiv");
-  return [t, e];
+  return e.classList.contains(u.base) || (e = null), [t, e];
 }, b = (n, t = void 0) => {
   const e = document.createElement("div");
   return e.className = n, t && t.appendChild(e), e;
@@ -127,12 +127,12 @@ const Z = (n) => {
   };
   return { coordinates: l, size: d, minSize: r, maxSize: a };
 }, K = (n, t, e, i, s) => {
-  const o = $(
+  const o = I(
     n.minSize,
     { width: 1, height: 1 },
     e
   );
-  let r = $(n.maxSize, t, e), a = $(n.size, t, e);
+  let r = I(n.maxSize, t, e), a = I(n.size, t, e);
   r = et(r, t, e);
   let l = n.coordinates;
   if (i) {
@@ -196,7 +196,7 @@ const Z = (n) => {
     r,
     e
   )), n.coordinates.x - i.width * n.points.x < 0 && (i = W(n.coordinates.x, o, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = U(n.coordinates.y, r, e)), i;
-}, $ = (n, t, e) => {
+}, I = (n, t, e) => {
   const i = { ...n };
   return e && !i.width && !i.height && (e > 1 ? i.height = t.height : i.width = t.width), i.width || (i.width = e ? i.height * e : t.width), i.height || (i.height = e ? i.width / e : t.height), i;
 }, et = (n, t, e) => {
@@ -397,9 +397,9 @@ class st {
   }
 }
 function nt(n) {
-  n.addEventListener("touchstart", I), n.addEventListener("touchend", I), n.addEventListener("touchmove", I);
+  n.addEventListener("touchstart", $), n.addEventListener("touchend", $), n.addEventListener("touchmove", $);
 }
-function I(n) {
+function $(n) {
   n.preventDefault();
   const t = n, e = t.changedTouches[0];
   e.target.dispatchEvent(
@@ -553,32 +553,32 @@ function c(n, t, e, i = !1) {
   if (v(t))
     return e;
   if (typeof t != "number")
-    throw g.new(n, "number");
+    throw w.new(n, "number");
   if (Number.isNaN(t))
-    throw g.new(n, "NaN", !1);
+    throw w.new(n, "NaN", !1);
   if (i ? t < 0 : t <= 0)
-    throw g.new(n, "positive");
+    throw w.new(n, "positive");
   return t;
 }
 function k(n, t, e) {
   if (v(t))
     return e;
   if (typeof t != "boolean")
-    throw g.new(n, "boolean");
+    throw w.new(n, "boolean");
   return t;
 }
 function M(n, t, e) {
   if (v(t))
     return e;
   if (typeof t != "string" || !lt.includes(t))
-    throw g.new(n, "SizeUnit");
+    throw w.new(n, "SizeUnit");
   return t;
 }
 const ut = (n, t) => {
-  var s, o, r, a, l, d, m, f, p, X, L, D, H, A, Y, T;
+  var s, o, r, a, l, d, m, f, p, D, L, X, H, A, Y, T;
   const e = t || {};
   if (typeof e != "object" || e === null)
-    throw g.new("options", "object");
+    throw w.new("options", "object");
   const i = (F, O) => {
     const S = n[`${dt}${ct(F)}`];
     if (!S)
@@ -610,18 +610,18 @@ const ut = (n, t) => {
       x: i("startSizeX", (m = e.startSize) == null ? void 0 : m.x),
       y: i("startSizeY", (f = e.startSize) == null ? void 0 : f.y),
       width: i("startSizeWidth", (p = e.startSize) == null ? void 0 : p.width),
-      height: i("startSizeHeight", (X = e.startSize) == null ? void 0 : X.height),
+      height: i("startSizeHeight", (D = e.startSize) == null ? void 0 : D.height),
       unit: i("startSizeUnit", (L = e.startSize) == null ? void 0 : L.unit)
     },
     defaultSize: {
-      x: i("defaultSizeX", (D = e.defaultSize) == null ? void 0 : D.x),
+      x: i("defaultSizeX", (X = e.defaultSize) == null ? void 0 : X.x),
       y: i("defaultSizeY", (H = e.defaultSize) == null ? void 0 : H.y),
       width: i("defaultSizeWidth", (A = e.defaultSize) == null ? void 0 : A.width),
       height: i("defaultSizeHeight", (Y = e.defaultSize) == null ? void 0 : Y.height),
       unit: i("defaultSizeUnit", (T = e.defaultSize) == null ? void 0 : T.unit)
     }
   };
-}, j = (n, t, e) => Math.abs(n - t) < e, wt = (n) => {
+}, j = (n, t, e) => Math.abs(n - t) < e, gt = (n) => {
   var r;
   const t = c("aspectRatio", n.aspectRatio, 0), e = {
     width: c("minSizeWidth", n.minSize.width, 0),
@@ -656,7 +656,7 @@ const ut = (n, t) => {
     if (e.width && e.height) {
       const a = e.width / e.height;
       if (!j(a, t, E))
-        throw g.aspectRatio(
+        throw w.aspectRatio(
           a,
           t,
           E
@@ -665,7 +665,7 @@ const ut = (n, t) => {
     if (s.width && s.height) {
       const a = s.width / s.height;
       if (!j(a, t, E))
-        throw g.aspectRatio(
+        throw w.aspectRatio(
           a,
           t,
           E
@@ -689,7 +689,7 @@ const ut = (n, t) => {
     startSize: o
   };
 };
-class gt {
+class wt {
   constructor(t, e, i, s, o) {
     h(this, "position");
     h(this, "eventBus");
@@ -752,7 +752,7 @@ class ft {
     h(this, "handles", []);
     this.el = b(e, t);
     for (const r of mt) {
-      const a = new gt(
+      const a = new wt(
         this.el,
         o,
         r,
@@ -786,6 +786,7 @@ class ft {
 const B = { width: 1, height: 1 };
 class zt {
   constructor(t, e) {
+    h(this, "replaceDOM", !1);
     h(this, "htmlContainer");
     h(this, "htmlImg");
     h(this, "options");
@@ -813,12 +814,12 @@ class zt {
     });
     try {
       this.parseCallbackFunctions(e);
-      const i = Z(t);
-      this.htmlImg = i[0], this.htmlContainer = i[1], this.changeStatus(z.waiting);
-      const s = ut(this.htmlImg.dataset, e);
-      this.options = wt(s), this.initializeCropper();
+      const [i, s] = Z(t);
+      this.htmlImg = i, s ? this.htmlContainer = s : this.replaceDOM = !0, this.changeStatus(z.waiting);
+      const o = ut(this.htmlImg.dataset, e);
+      this.options = gt(o), this.initializeCropper();
     } catch (i) {
-      if (i instanceof y || i instanceof g)
+      if (i instanceof y || i instanceof w)
         this.onErrorCallback(i);
       else
         throw i;
@@ -850,16 +851,16 @@ class zt {
    * @param {String} src
    */
   setImage(t) {
-    this.htmlImg.src = t;
+    t && t.length !== 0 && (this.htmlImg.src = t);
   }
   /**
    * Resets the crop region to the initial settings.
    */
   reset() {
     try {
-      this.destroy(), this.initialize();
+      this.destroy(), this.initializeCropper();
     } catch (t) {
-      if (t instanceof y || t instanceof g || t instanceof x)
+      if (t instanceof y || t instanceof w || t instanceof x)
         this.onErrorCallback(t);
       else
         throw t;
@@ -869,7 +870,10 @@ class zt {
    * Destroy the TrueCropper instance and replace with the original element.
    */
   destroy() {
-    this.isDomCreated && (this.newSelection.destroy(), this.handles.destroy(), this.selection.destroy(), this.background.destroy()), this.isDomCreated = !1;
+    this.isDomCreated && (this.observer.unobserve(this.htmlImg), this.newSelection.destroy(), this.handles.destroy(), this.selection.destroy(), this.background.destroy(), this.replaceDOM && this.htmlContainer.parentElement && this.htmlContainer.parentElement.replaceChild(
+      this.htmlImg,
+      this.htmlContainer
+    )), this.isDomCreated = !1;
   }
   /**
    * Moves the crop region to a specified coordinate.
@@ -985,23 +989,27 @@ class zt {
   createDOM() {
     if (this.isDomCreated)
       return;
+    this.replaceDOM && (this.htmlContainer = document.createElement("div"), this.htmlContainer.classList.add(u.base), this.htmlImg.parentElement && this.htmlImg.parentElement.replaceChild(
+      this.htmlContainer,
+      this.htmlImg
+    ), this.htmlContainer.appendChild(this.htmlImg));
     const t = this.htmlContainer;
-    nt(t), this.htmlImg.classList.add(w.img), this.background = new ht(t, w.background), this.newSelection = new rt(
+    nt(t), this.htmlImg.classList.add(u.img), this.background = new ht(t, u.background), this.newSelection = new rt(
       t,
-      w.new,
+      u.new,
       this.eventBus,
       this.options.allowNewSelection
     ), this.selection = new at(
       t,
-      w.selection,
+      u.selection,
       this.eventBus,
       this.options.allowMove
     ), this.handles = new ft(
       t,
-      w.hanleds,
+      u.hanleds,
       this.eventBus,
       this.options.allowResize,
-      w.handle
+      u.handle
     ), this.isDomCreated = !0;
   }
   calcContainerProps() {
@@ -1039,7 +1047,7 @@ class zt {
     };
   }
   changeStatus(t) {
-    this.status = t, this.htmlImg && this.setDataset(w.valueStatus, t);
+    this.status = t, this.htmlImg && this.setDataset(u.valueStatus, t);
   }
   /**
    * Draw visuals (border, handles, etc) for the current box.
@@ -1165,7 +1173,7 @@ class zt {
   }
   setDatasetCropValues(t) {
     const e = t || this.getValue();
-    this.setDataset(w.valueX, e.x), this.setDataset(w.valueY, e.y), this.setDataset(w.valueWidth, e.width), this.setDataset(w.valueHeight, e.height);
+    this.setDataset(u.valueX, e.x), this.setDataset(u.valueY, e.y), this.setDataset(u.valueWidth, e.width), this.setDataset(u.valueHeight, e.height);
   }
 }
 export {

@@ -267,6 +267,7 @@
     crossorigin="anonymous"></script>
   <script>
     const demo = () => {
+      let onpage = null;
       const setValue = (selector, val) => {
         const el = document.querySelector(selector);
         if (el) {
@@ -293,7 +294,7 @@
           setValue("#demoValuesHeight", data.height);
         },
       };
-      let onpage = new trueCropper("#trueCropper", defaultOptions);
+      onpage = new trueCropper("#trueCropper", defaultOptions);
       const update = () => {
         var _a;
         const error = document.querySelector("#demoError");
@@ -320,7 +321,7 @@
             newOptions[name] = input.type === "checkbox" ? input.checked : Number(input.value);
           }
         }
-        onpage.destroy();
+        onpage?.destroy();
         console.log(Object.assign(Object.assign({}, defaultOptions), newOptions));
         onpage = new trueCropper("#trueCropper", Object.assign(Object.assign({}, defaultOptions), newOptions));
       };

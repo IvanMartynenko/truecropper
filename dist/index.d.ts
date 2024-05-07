@@ -96,6 +96,7 @@ declare enum Status {
 }
 
 declare class TrueCropper {
+    private replaceDOM;
     private htmlContainer;
     private htmlImg;
     private options;

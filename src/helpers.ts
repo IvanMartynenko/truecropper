@@ -39,9 +39,12 @@ export const getHTMLelements = (
   // if (el.getAttribute("src") === null) {
   //   throw new TrueCropperHtmlError("srcEmpty");
   // }
-  const parent = el.parentElement as HTMLDivElement;
-  if (!parent || !parent.classList.contains(CONSTANTS.base)) {
+  let parent: HTMLDivElement | null = el.parentElement as HTMLDivElement;
+  if (!parent) {
     throw new TrueCropperHtmlError("parentNotContainDiv");
+  }
+  if (!parent.classList.contains(CONSTANTS.base)) {
+    parent = null;
   }
   return [el, parent] as const;
 };

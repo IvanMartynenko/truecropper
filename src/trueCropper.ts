@@ -42,6 +42,7 @@ import {
  */
 const defaultSize = { width: 1, height: 1 };
 export default class TrueCropper {
+  private replaceDOM = false;
   private htmlContainer!: HTMLDivElement;
   private htmlImg!: HTMLImageElement;
 
@@ -88,9 +89,13 @@ export default class TrueCropper {
   ) {
     try {
       this.parseCallbackFunctions(optionsProps);
-      const elements = getHTMLelements(element);
-      this.htmlImg = elements[0];
-      this.htmlContainer = elements[1];
+      const [img, container] = getHTMLelements(element);
+      this.htmlImg = img;
+      if (container) {
+        this.htmlContainer = container;
+      } else {
+        this.replaceDOM = true;
+      }
       this.changeStatus(Status.waiting);
 
       // Parse options
@@ -178,6 +183,14 @@ export default class TrueCropper {
       this.handles.destroy();
       this.selection.destroy();
       this.background.destroy();
+      if (this.replaceDOM) {
+        if (this.htmlContainer.parentElement) {
+          this.htmlContainer.parentElement.replaceChild(
+            this.htmlImg,
+            this.htmlContainer,
+          );
+        }
+      }
     }
     this.isDomCreated = false;
   }
@@ -375,8 +388,18 @@ export default class TrueCropper {
       return;
     }
 
+    if (this.replaceDOM) {
+      this.htmlContainer = document.createElement("div");
+      this.htmlContainer.classList.add(CONSTANTS.base);
+      if (this.htmlImg.parentElement) {
+        this.htmlImg.parentElement.replaceChild(
+          this.htmlContainer,
+          this.htmlImg,
+        );
+      }
+      this.htmlContainer.appendChild(this.htmlImg);
+    }
     const base = this.htmlContainer;
-    // base.classList.add(CONSTANTS.base);
     enableTouch(base);
 
     this.htmlImg.classList.add(CONSTANTS.img);
