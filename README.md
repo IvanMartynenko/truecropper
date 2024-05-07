@@ -1,12 +1,13 @@
 ## RealCropper.js
 
-### A vanilla JavaScript image cropper that's lightweight, awesome, and has absolutely zero dependencies.
+A vanilla JavaScript image cropper that's lightweight, awesome, and has absolutely zero dependencies.
 
 - Made only with native, delicious vanilla JS
 - Zero dependencies
 - No z-index, make modals easy
 - Work with real image pixel size
 - Supports touch devices
+- Set results in dataset of image
 
 **[Try it out in the demo →](https://ivanmartynenko.github.io/truecropper/)**
 
