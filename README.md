@@ -13,8 +13,10 @@ A vanilla JavaScript image cropper that's lightweight, awesome, and has absolute
 
 ## About
 The library provides image cropping in the web browser. 
+
 In the browser, we have the actual size of the image and the size of the image embedded in the DOM. However, these sizes may differ. The difference lies in the fact that if you have an image with a size of 10000x10000 pixels, and you embed it in HTML, where it is limited by a container and cannot be larger than 500x500 pixels.
 This library can work with the actual size of the image.
+
 The library sets the results of image cropping into the dataset of the image.
 
 ## Installation
