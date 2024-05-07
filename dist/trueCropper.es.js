@@ -1,6 +1,6 @@
 var _ = Object.defineProperty;
 var P = (n, t, e) => t in n ? _(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
-var h = (n, t, e) => (P(n, typeof t != "symbol" ? t + "" : t, e), e);
+var o = (n, t, e) => (P(n, typeof t != "symbol" ? t + "" : t, e), e);
 const g = "truecropper", u = {
   base: g,
   img: `${g}__image`,
@@ -23,14 +23,14 @@ class y extends Error {
   constructor(e) {
     const i = q[e];
     super(i);
-    h(this, "data");
+    o(this, "data");
     Object.setPrototypeOf(this, y.prototype), this.name = "TrueCropperHtmlError", this.data = null;
   }
 }
 class x extends Error {
   constructor(e, i) {
     super(e);
-    h(this, "data");
+    o(this, "data");
     Object.setPrototypeOf(this, x.prototype), this.name = "TrueCropperImageError", this.data = {
       target: i.target,
       coordinates: i.coordinates ? { ...i.coordinates } : void 0,
@@ -39,23 +39,23 @@ class x extends Error {
       sourceSize: { ...i.sourceSize }
     };
   }
-  static startSize(e, i, s, o, r) {
-    const a = `The ${e} (${i.x}x${i.y}:${s.width}x${s.height}) exceeds the ${o} (${r.width}x${r.height})`, l = {
+  static startSize(e, i, s, h, r) {
+    const a = `The ${e} (${i.x}x${i.y}:${s.width}x${s.height}) exceeds the ${h} (${r.width}x${r.height})`, l = {
       target: e,
       coordinates: i,
       targetSize: s,
-      source: o,
+      source: h,
       sourceSize: r
     };
     return new this(a, l);
   }
-  static size(e, i, s, o) {
-    const r = `The ${e} (${i.width}x${i.height}) exceeds the ${s} (${o.width}x${o.height})`, a = {
+  static size(e, i, s, h) {
+    const r = `The ${e} (${i.width}x${i.height}) exceeds the ${s} (${h.width}x${h.height})`, a = {
       target: e,
       coordinates: void 0,
       targetSize: i,
       source: s,
-      sourceSize: o
+      sourceSize: h
     };
     return new this(r, a);
   }
@@ -63,16 +63,16 @@ class x extends Error {
 class w extends Error {
   constructor(e) {
     super(e);
-    h(this, "data");
+    o(this, "data");
     Object.setPrototypeOf(this, w.prototype), this.name = "TrueCropperOptionsError", this.data = null;
   }
   static aspectRatio(e, i, s) {
-    const o = `The specified aspect ratio (${i}) and calculated minimum dimensions (width/height = ${e}) are greater than (${s}). This might be due to a rounding error on the server side or incorrect minimum sizes.`;
-    return new this(o);
+    const h = `The specified aspect ratio (${i}) and calculated minimum dimensions (width/height = ${e}) are greater than (${s}). This might be due to a rounding error on the server side or incorrect minimum sizes.`;
+    return new this(h);
   }
   static new(e, i, s = !0) {
-    const o = s ? `${e} must be of type ${i}` : `${e} must not be of type ${i}`;
-    return new this(o);
+    const h = s ? `${e} must be of type ${i}` : `${e} must not be of type ${i}`;
+    return new this(h);
   }
 }
 const Z = (n) => {
@@ -94,11 +94,11 @@ const Z = (n) => {
 }, R = (n, t) => {
   if (t.savedCoordinate < 0)
     return { flipped: !1, coordinate: null, size: null, point: 0.5 };
-  const e = n < t.savedCoordinate, i = t.left !== e, s = t.savedCoordinate, o = Math.abs(t.savedCoordinate - n), r = Number(e);
+  const e = n < t.savedCoordinate, i = t.left !== e, s = t.savedCoordinate, h = Math.abs(t.savedCoordinate - n), r = Number(e);
   return {
     flipped: i,
     coordinate: s,
-    size: o,
+    size: h,
     point: r
   };
 }, G = (n, t, e) => {
@@ -112,22 +112,22 @@ const Z = (n) => {
     }
   };
 }, J = (n, t, e, i, s) => {
-  const o = (m, f, p) => p === "relative" ? m * s[f] : p === "percent" ? m >= 1 ? i[f] * (m / 100) : i[f] * m : m, r = {
-    width: o(t.width, "width", t.unit),
-    height: o(t.height, "height", t.unit)
+  const h = (m, f, p) => p === "relative" ? m * s[f] : p === "percent" ? m >= 1 ? i[f] * (m / 100) : i[f] * m : m, r = {
+    width: h(t.width, "width", t.unit),
+    height: h(t.height, "height", t.unit)
   }, a = {
-    width: o(e.width, "width", e.unit),
-    height: o(e.height, "height", e.unit)
+    width: h(e.width, "width", e.unit),
+    height: h(e.height, "height", e.unit)
   }, l = {
-    x: o(n.x, "width", n.unit),
-    y: o(n.y, "height", n.unit)
+    x: h(n.x, "width", n.unit),
+    y: h(n.y, "height", n.unit)
   }, d = {
-    width: o(n.width, "width", n.unit),
-    height: o(n.height, "height", n.unit)
+    width: h(n.width, "width", n.unit),
+    height: h(n.height, "height", n.unit)
   };
   return { coordinates: l, size: d, minSize: r, maxSize: a };
 }, K = (n, t, e, i, s) => {
-  const o = I(
+  const h = I(
     n.minSize,
     { width: 1, height: 1 },
     e
@@ -139,7 +139,7 @@ const Z = (n) => {
     const d = it(
       l,
       a,
-      o,
+      h,
       r,
       t,
       e,
@@ -148,7 +148,7 @@ const Z = (n) => {
     );
     l = d.coordinates, a = d.size;
   }
-  return { coordinates: l, size: a, minSize: o, maxSize: r, imgProps: t, aspectRatio: e };
+  return { coordinates: l, size: a, minSize: h, maxSize: r, imgProps: t, aspectRatio: e };
 }, Q = ({
   coordinates: n,
   minSize: t,
@@ -156,11 +156,11 @@ const Z = (n) => {
   size: i,
   imgProps: s
 }) => {
-  const o = (r, a, l, d) => {
+  const h = (r, a, l, d) => {
     if (r.width > a.width || r.height > a.height)
       throw x.size(l, r, d, a);
   };
-  if (o(t, s, "minSize", "imageSize"), o(t, e, "minSize", "maxSize"), o(t, i, "minSize", "startSize"), n.x + i.width > s.width || n.y + i.height > s.height)
+  if (h(t, s, "minSize", "imageSize"), h(t, e, "minSize", "maxSize"), h(t, i, "minSize", "startSize"), n.x + i.width > s.width || n.y + i.height > s.height)
     throw x.startSize(
       "startSize",
       n,
@@ -186,16 +186,16 @@ const Z = (n) => {
   let i = { ...n.size };
   if (e === 0)
     return i;
-  const s = n.isMultuAxis ? i.height * e >= i.width : n.isVerticalMovement, o = n.points.x === 1 || n.points.x === 0 ? 1 : 2, r = n.points.y === 1 || n.points.y === 0 ? 1 : 2;
+  const s = n.isMultuAxis ? i.height * e >= i.width : n.isVerticalMovement, h = n.points.x === 1 || n.points.x === 0 ? 1 : 2, r = n.points.y === 1 || n.points.y === 0 ? 1 : 2;
   return s ? i = { width: i.height * e, height: i.height } : i = { width: i.width, height: i.width / e }, n.coordinates.x + i.width * (1 - n.points.x) > t.width && (i = W(
     t.width - n.coordinates.x,
-    o,
+    h,
     e
   )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = U(
     t.height - n.coordinates.y,
     r,
     e
-  )), n.coordinates.x - i.width * n.points.x < 0 && (i = W(n.coordinates.x, o, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = U(n.coordinates.y, r, e)), i;
+  )), n.coordinates.x - i.width * n.points.x < 0 && (i = W(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = U(n.coordinates.y, r, e)), i;
 }, I = (n, t, e) => {
   const i = { ...n };
   return e && !i.width && !i.height && (e > 1 ? i.height = t.height : i.width = t.width), i.width || (i.width = e ? i.height * e : t.width), i.height || (i.height = e ? i.width / e : t.height), i;
@@ -206,12 +206,12 @@ const Z = (n) => {
     maxSize: t,
     aspectRatio: e
   }), i;
-}, it = (n, t, e, i, s, o, r, a) => {
+}, it = (n, t, e, i, s, h, r, a) => {
   const l = { ...t }, d = { ...n }, m = Math.min(i.width, s.width - n.x), f = Math.min(i.height, s.height - n.y), p = N({
     size: l,
     maxSize: { width: m, height: f },
     minSize: e,
-    aspectRatio: o
+    aspectRatio: h
   });
   return l.width = p.width, l.height = p.height, d.x = r ? (s.width - l.width) / 2 : n.x, d.y = a ? (s.height - l.height) / 2 : n.y, { coordinates: d, size: l };
 };
@@ -226,16 +226,16 @@ class st {
     size: e,
     minSize: i,
     maxSize: s,
-    imgProps: o,
+    imgProps: h,
     aspectRatio: r
   }) {
-    h(this, "coordinates");
-    h(this, "size");
-    h(this, "minSize");
-    h(this, "maxSize");
-    h(this, "imgSize");
-    h(this, "aspectRatio");
-    this.coordinates = { ...t }, this.size = { ...e }, this.minSize = { ...i }, this.maxSize = { ...s }, this.imgSize = { ...o }, this.aspectRatio = r;
+    o(this, "coordinates");
+    o(this, "size");
+    o(this, "minSize");
+    o(this, "maxSize");
+    o(this, "imgSize");
+    o(this, "aspectRatio");
+    this.coordinates = { ...t }, this.size = { ...e }, this.minSize = { ...i }, this.maxSize = { ...s }, this.imgSize = { ...h }, this.aspectRatio = r;
   }
   /**
    * Moves the box to the specified coordinates within the boundaries of the image.
@@ -359,12 +359,12 @@ class st {
     }, i = {
       x: t.coordinates.x ?? this.coordinates.x + this.size.width / 2,
       y: t.coordinates.y ?? this.coordinates.y + this.size.height / 2
-    }, s = t.coordinates.y !== null, o = s && t.coordinates.x !== null;
+    }, s = t.coordinates.y !== null, h = s && t.coordinates.x !== null;
     return {
       size: e,
       coordinates: i,
       isVerticalMovement: s,
-      isMultuAxis: o,
+      isMultuAxis: h,
       points: t.points
     };
   }
@@ -403,7 +403,7 @@ function $(n) {
   n.preventDefault();
   const t = n, e = t.changedTouches[0];
   e.target.dispatchEvent(
-    new MouseEvent(ot(t.type), {
+    new MouseEvent(ht(t.type), {
       bubbles: !0,
       cancelable: !0,
       view: window,
@@ -414,7 +414,7 @@ function $(n) {
     })
   );
 }
-function ot(n) {
+function ht(n) {
   switch (n) {
     case "touchstart":
       return "mousedown";
@@ -424,9 +424,9 @@ function ot(n) {
       return "mouseup";
   }
 }
-class ht {
+class ot {
   constructor(t, e) {
-    h(this, "nested", []);
+    o(this, "nested", []);
     for (let i = 0; i < 4; i++) {
       const s = b(`${e}-${i}`, t);
       this.nested.push(s);
@@ -455,11 +455,11 @@ class rt {
    * @constructor
    */
   constructor(t, e, i, s) {
-    h(this, "eventBus");
-    h(this, "el");
-    h(this, "startMouse", { mouseX: 0, mouseY: 0 });
-    h(this, "newBoxCreated", !1);
-    h(this, "listener");
+    o(this, "eventBus");
+    o(this, "el");
+    o(this, "startMouse", { mouseX: 0, mouseY: 0 });
+    o(this, "newBoxCreated", !1);
+    o(this, "listener");
     this.eventBus = i, this.el = b(e, t), s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener), this.mouseEvent()) : this.hide();
   }
   hide() {
@@ -476,8 +476,8 @@ class rt {
       s.stopPropagation(), document.addEventListener("mousemove", e), document.addEventListener("mouseup", i), this.startMouse = { mouseX: s.clientX, mouseY: s.clientY }, this.newBoxCreated = !1;
     }, e = (s) => {
       if (s.stopPropagation(), this.newBoxCreated) {
-        const o = { x: s.clientX, y: s.clientY };
-        this.eventBus({ type: "handlemove", data: o });
+        const h = { x: s.clientX, y: s.clientY };
+        this.eventBus({ type: "handlemove", data: h });
       } else
         this.tryToCreateNewBox(s.clientX, s.clientY);
     }, i = (s) => {
@@ -488,8 +488,8 @@ class rt {
   tryToCreateNewBox(t, e) {
     if (t === this.startMouse.mouseX || e === this.startMouse.mouseY)
       return;
-    const i = t < this.startMouse.mouseX, s = e < this.startMouse.mouseY, [o, r] = i ? [t, this.startMouse.mouseX - t] : [this.startMouse.mouseX, t - this.startMouse.mouseX], [a, l] = s ? [e, this.startMouse.mouseY - e] : [this.startMouse.mouseY, e - this.startMouse.mouseY], d = {
-      coordinates: { x: o, y: a },
+    const i = t < this.startMouse.mouseX, s = e < this.startMouse.mouseY, [h, r] = i ? [t, this.startMouse.mouseX - t] : [this.startMouse.mouseX, t - this.startMouse.mouseX], [a, l] = s ? [e, this.startMouse.mouseY - e] : [this.startMouse.mouseY, e - this.startMouse.mouseY], d = {
+      coordinates: { x: h, y: a },
       size: { width: r, height: l },
       leftMovable: i,
       topMovable: s
@@ -499,10 +499,10 @@ class rt {
 }
 class at {
   constructor(t, e, i, s) {
-    h(this, "eventBus");
-    h(this, "el");
-    h(this, "enable");
-    h(this, "listener");
+    o(this, "eventBus");
+    o(this, "el");
+    o(this, "enable");
+    o(this, "listener");
     this.eventBus = i, this.el = b(e, t), this.enable = s, s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.el.style.cursor = "default";
   }
   transform(t) {
@@ -526,31 +526,31 @@ class at {
       if (s.stopPropagation(), !this.enable)
         return;
       document.addEventListener("mousemove", e), document.addEventListener("mouseup", i);
-      const o = { x: s.clientX, y: s.clientY };
-      this.eventBus({ type: "regionstart", data: o });
+      const h = { x: s.clientX, y: s.clientY };
+      this.eventBus({ type: "regionstart", data: h });
     }, e = (s) => {
       s.stopPropagation();
-      const o = { x: s.clientX, y: s.clientY };
-      this.eventBus({ type: "regionmove", data: o });
+      const h = { x: s.clientX, y: s.clientY };
+      this.eventBus({ type: "regionmove", data: h });
     }, i = (s) => {
       s.stopPropagation(), document.removeEventListener("mousemove", e), document.removeEventListener("mouseup", i);
-      const o = { x: s.clientX, y: s.clientY };
-      this.eventBus({ type: "regionend", data: o });
+      const h = { x: s.clientX, y: s.clientY };
+      this.eventBus({ type: "regionend", data: h });
     };
     return t;
   }
 }
 const lt = ["real", "relative", "percent"];
-var z = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(z || {});
+var v = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(v || {});
 const E = 1e-4, dt = "cropper";
 function ct(n) {
   return n.charAt(0).toUpperCase() + n.slice(1);
 }
-function v(n) {
+function z(n) {
   return n == null;
 }
 function c(n, t, e, i = !1) {
-  if (v(t))
+  if (z(t))
     return e;
   if (typeof t != "number")
     throw w.new(n, "number");
@@ -561,21 +561,21 @@ function c(n, t, e, i = !1) {
   return t;
 }
 function k(n, t, e) {
-  if (v(t))
+  if (z(t))
     return e;
   if (typeof t != "boolean")
     throw w.new(n, "boolean");
   return t;
 }
 function M(n, t, e) {
-  if (v(t))
+  if (z(t))
     return e;
   if (typeof t != "string" || !lt.includes(t))
     throw w.new(n, "SizeUnit");
   return t;
 }
 const ut = (n, t) => {
-  var s, o, r, a, l, d, m, f, p, D, L, X, H, A, Y, T;
+  var s, h, r, a, l, d, m, f, p, D, L, X, H, A, Y, T;
   const e = t || {};
   if (typeof e != "object" || e === null)
     throw w.new("options", "object");
@@ -598,7 +598,7 @@ const ut = (n, t) => {
     returnMode: i("returnMode", e.returnMode),
     minSize: {
       width: i("minSizeWidth", (s = e.minSize) == null ? void 0 : s.width),
-      height: i("minSizeHeight", (o = e.minSize) == null ? void 0 : o.height),
+      height: i("minSizeHeight", (h = e.minSize) == null ? void 0 : h.height),
       unit: i("minSizeUnit", (r = e.minSize) == null ? void 0 : r.unit)
     },
     maxSize: {
@@ -637,22 +637,22 @@ const ut = (n, t) => {
     width: c("startSizeWidth", n.startSize.width, 0),
     height: c("startSizeHeight", n.startSize.height, 0),
     unit: M("startSizeUnit", n.startSize.unit, "real"),
-    centeredX: v(n.startSize.x),
-    centeredY: v(n.startSize.y),
+    centeredX: z(n.startSize.x),
+    centeredY: z(n.startSize.y),
     allowChange: !1
   };
   s.allowChange = s.width === 0 && s.height === 0;
-  const o = {
+  const h = {
     x: c("defaultSizeX", n.defaultSize.x, 0, !0),
     y: c("defaultSizeY", n.defaultSize.y, 0, !0),
     width: c("defaultSizeWidth", n.defaultSize.width, 0),
     height: c("defaultSizeHeight", n.defaultSize.height, 0),
     unit: M("defaultSizeUnit", n.defaultSize.unit, "real"),
-    centeredX: v(n.defaultSize.x),
-    centeredY: v(n.defaultSize.y),
+    centeredX: z(n.defaultSize.x),
+    centeredY: z(n.defaultSize.y),
     allowChange: !1
   };
-  if (o.allowChange = o.width === 0 && o.height === 0, t) {
+  if (h.allowChange = h.width === 0 && h.height === 0, t) {
     if (e.width && e.height) {
       const a = e.width / e.height;
       if (!j(a, t, E))
@@ -686,17 +686,17 @@ const ut = (n, t) => {
     minSize: e,
     maxSize: i,
     firstInitSize: s,
-    startSize: o
+    startSize: h
   };
 };
 class wt {
-  constructor(t, e, i, s, o) {
-    h(this, "position");
-    h(this, "eventBus");
-    h(this, "el");
-    h(this, "enable");
-    h(this, "listener");
-    this.position = i.position, this.eventBus = s, this.enable = o, this.el = b(e, t), this.el.style.cursor = i.cursor, o ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.hide();
+  constructor(t, e, i, s, h) {
+    o(this, "position");
+    o(this, "eventBus");
+    o(this, "el");
+    o(this, "enable");
+    o(this, "listener");
+    this.position = i.position, this.eventBus = s, this.enable = h, this.el = b(e, t), this.el.style.cursor = i.cursor, h ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.hide();
   }
   show() {
     this.el.style.display = "block";
@@ -708,8 +708,8 @@ class wt {
     this.listener && this.el.removeEventListener("mousedown", this.listener), this.el.remove();
   }
   transform(t) {
-    const e = this.el.offsetWidth, i = this.el.offsetHeight, s = t.x + t.width * this.position.x - e / 2, o = t.y + t.height * this.position.y - i / 2;
-    this.el.style.transform = `translate(${s}px, ${o}px)`;
+    const e = this.el.offsetWidth, i = this.el.offsetHeight, s = t.x + t.width * this.position.x - e / 2, h = t.y + t.height * this.position.y - i / 2;
+    this.el.style.transform = `translate(${s}px, ${h}px)`;
   }
   getData() {
     return {
@@ -721,12 +721,12 @@ class wt {
       if (s.stopPropagation(), !this.enable)
         return;
       document.addEventListener("mousemove", e), document.addEventListener("mouseup", i);
-      const o = this.getData();
-      this.eventBus({ type: "handlestart", data: o });
+      const h = this.getData();
+      this.eventBus({ type: "handlestart", data: h });
     }, e = (s) => {
       s.stopPropagation();
-      const o = { x: s.clientX, y: s.clientY };
-      this.eventBus({ type: "handlemove", data: o });
+      const h = { x: s.clientX, y: s.clientY };
+      this.eventBus({ type: "handlemove", data: h });
     }, i = (s) => {
       s.stopPropagation(), document.removeEventListener("mousemove", e), document.removeEventListener("mouseup", i), this.eventBus({ type: "handleend" });
     };
@@ -747,14 +747,14 @@ class ft {
   /**
    * Creates a new Handle instance.
    */
-  constructor(t, e, i, s, o) {
-    h(this, "el");
-    h(this, "handles", []);
+  constructor(t, e, i, s, h) {
+    o(this, "el");
+    o(this, "handles", []);
     this.el = b(e, t);
     for (const r of mt) {
       const a = new wt(
         this.el,
-        o,
+        h,
         r,
         i,
         s
@@ -784,28 +784,28 @@ class ft {
   }
 }
 const B = { width: 1, height: 1 };
-class zt {
+class vt {
   constructor(t, e) {
-    h(this, "replaceDOM", !1);
-    h(this, "htmlContainer");
-    h(this, "htmlImg");
-    h(this, "options");
-    h(this, "newSelection");
-    h(this, "selection");
-    h(this, "handles");
-    h(this, "background");
-    h(this, "box");
-    h(this, "currentMove");
-    h(this, "activeHandle");
-    h(this, "real", B);
-    h(this, "relative", B);
-    h(this, "ratio", B);
-    h(this, "firstInit", !0);
-    h(this, "isDomCreated", !1);
-    h(this, "status", z.waiting);
-    h(this, "eventBus", this.event.bind(this));
-    h(this, "observer");
-    h(this, "callbacks", {
+    o(this, "replaceDOM", !1);
+    o(this, "htmlContainer");
+    o(this, "htmlImg");
+    o(this, "options");
+    o(this, "newSelection");
+    o(this, "selection");
+    o(this, "handles");
+    o(this, "background");
+    o(this, "box");
+    o(this, "currentMove");
+    o(this, "activeHandle");
+    o(this, "real", B);
+    o(this, "relative", B);
+    o(this, "ratio", B);
+    o(this, "firstInit", !0);
+    o(this, "isDomCreated", !1);
+    o(this, "status", v.waiting);
+    o(this, "eventBus", this.event.bind(this));
+    o(this, "observer");
+    o(this, "callbacks", {
       onInitialize: void 0,
       onCropStart: void 0,
       onCropMove: void 0,
@@ -815,9 +815,9 @@ class zt {
     try {
       this.parseCallbackFunctions(e);
       const [i, s] = Z(t);
-      this.htmlImg = i, s ? this.htmlContainer = s : this.replaceDOM = !0, this.changeStatus(z.waiting);
-      const o = ut(this.htmlImg.dataset, e);
-      this.options = gt(o), this.initializeCropper();
+      this.htmlImg = i, s ? this.htmlContainer = s : this.replaceDOM = !0, this.changeStatus(v.waiting);
+      const h = ut(this.htmlImg.dataset, e);
+      this.options = gt(h), this.initializeCropper();
     } catch (i) {
       if (i instanceof y || i instanceof w)
         this.onErrorCallback(i);
@@ -851,14 +851,14 @@ class zt {
    * @param {String} src
    */
   setImage(t) {
-    t && t.length !== 0 && (this.htmlImg.src = t);
+    t && t.length !== 0 && (this.firstInit = !1, this.htmlImg.src = t);
   }
   /**
    * Resets the crop region to the initial settings.
    */
   reset() {
     try {
-      this.destroy(), this.initializeCropper();
+      this.firstInit = !1, this.destroy(), this.initializeCropper();
     } catch (t) {
       if (t instanceof y || t instanceof w || t instanceof x)
         this.onErrorCallback(t);
@@ -899,6 +899,28 @@ class zt {
     this.box.scale(t, e), this.redraw(), this.onCropEndCallback();
   }
   /**
+   * Get the value of the crop region.
+   * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
+   * @returns {number} - The value of the crop region.
+   */
+  getValue(t = void 0) {
+    const e = t || this.options.returnMode, s = e === "relative" ? this.box.getValueRelative(this.ratio) : e === "percent" ? this.box.getValuePercent() : this.box.getValueReal();
+    return {
+      x: Math.round(s.x),
+      y: Math.round(s.y),
+      width: Math.round(s.width),
+      height: Math.round(s.height)
+    };
+  }
+  /**
+   * Retrieves the image properties.
+   * @returns {real: Size, relative: Size} An object containing the real and relative properties.
+   * @public
+   */
+  getImageProps() {
+    return { real: this.real, relative: this.relative };
+  }
+  /**
    * Handles the callback when after initialization.
    */
   onInitializeCallback() {
@@ -928,7 +950,7 @@ class zt {
    * @param {TrueCropperHtmlError | TrueCropperImageError | TrueCropperOptionsError} error - The error object containing information about the error.
    */
   onErrorCallback(t) {
-    this.changeStatus(z.error);
+    this.changeStatus(v.error);
     const e = {
       type: t.name,
       message: t.message,
@@ -938,20 +960,6 @@ class zt {
       this.callbacks.onError(this, e);
     else
       throw t;
-  }
-  /**
-   * Get the value of the crop region.
-   * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
-   * @returns {number} - The value of the crop region.
-   */
-  getValue(t = void 0) {
-    const e = t || this.options.returnMode, s = e === "relative" ? this.box.getValueRelative(this.ratio) : e === "percent" ? this.box.getValuePercent() : this.box.getValueReal();
-    return {
-      x: Math.round(s.x),
-      y: Math.round(s.y),
-      width: Math.round(s.width),
-      height: Math.round(s.height)
-    };
   }
   /** ==============
    *
@@ -972,13 +980,13 @@ class zt {
   initializeCropper() {
     this.initializeObserver(), this.htmlImg.width !== 0 && this.htmlImg.height !== 0 && this.initialize(), this.htmlImg.onload = () => {
       this.changeStatus(
-        this.status === z.waiting ? z.waiting : z.reloading
+        this.status === v.waiting ? v.waiting : v.reloading
       ), this.observer.unobserve(this.htmlImg), this.initialize();
     };
   }
   initialize() {
     try {
-      this.createDOM(), this.calcContainerProps(), this.updateRelativeSize(), this.createNewBox(), this.onInitializeCallback(), this.observer.observe(this.htmlImg), this.changeStatus(z.ready), this.onCropEndCallback();
+      this.createDOM(), this.calcContainerProps(), this.updateRelativeSize(), this.createNewBox(), this.onInitializeCallback(), this.observer.observe(this.htmlImg), this.changeStatus(v.ready), this.onCropEndCallback();
     } catch (t) {
       if (t instanceof x)
         this.onErrorCallback(t);
@@ -994,7 +1002,7 @@ class zt {
       this.htmlImg
     ), this.htmlContainer.appendChild(this.htmlImg));
     const t = this.htmlContainer;
-    nt(t), this.htmlImg.classList.add(u.img), this.background = new ht(t, u.background), this.newSelection = new rt(
+    nt(t), this.htmlImg.classList.add(u.img), this.background = new ot(t, u.background), this.newSelection = new rt(
       t,
       u.new,
       this.eventBus,
@@ -1030,14 +1038,14 @@ class zt {
       this.options.maxSize,
       this.real,
       this.ratio
-    ), o = K(
+    ), h = K(
       s,
       this.real,
       this.options.aspectRatio,
       i,
       e
     );
-    Q(o), this.box = new st(o);
+    Q(h), this.box = new st(h);
   }
   updateRelativeSize() {
     const { width: t, height: e } = this.htmlImg.getBoundingClientRect();
@@ -1087,12 +1095,12 @@ class zt {
     leftMovable: i,
     topMovable: s
   }) {
-    const o = this.handles.handleByMovableType(i, s).getData(), a = {
+    const h = this.handles.handleByMovableType(i, s).getData(), a = {
       coordinates: this.mouseCoordinates(t),
       size: e,
-      points: o.points
+      points: h.points
     };
-    return this.box.prepareAndApplyNewSizeAndCoordinates(a) ? (this.redraw(), this.onHandleMoveStart(o), !0) : !1;
+    return this.box.prepareAndApplyNewSizeAndCoordinates(a) ? (this.redraw(), this.onHandleMoveStart(h), !0) : !1;
   }
   /**
    * Executes when user begins dragging a handle.
@@ -1139,8 +1147,8 @@ class zt {
    * Executes when user moves the crop region.
    */
   onRegionMoveMoving(t) {
-    const { offsetX: e, offsetY: i } = this.currentMove, { x: s, y: o } = this.mouseCoordinates(t);
-    this.box.move({ x: s - e, y: o - i }), this.redraw(), this.onCropMoveCallback();
+    const { offsetX: e, offsetY: i } = this.currentMove, { x: s, y: h } = this.mouseCoordinates(t);
+    this.box.move({ x: s - e, y: h - i }), this.redraw(), this.onCropMoveCallback();
   }
   /**
    * Executes when user stops moving the crop region (mouse up).
@@ -1177,6 +1185,6 @@ class zt {
   }
 }
 export {
-  zt as default
+  vt as default
 };
 //# sourceMappingURL=trueCropper.es.js.map

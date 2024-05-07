@@ -149,6 +149,7 @@ export default class TrueCropper {
    */
   public setImage(src: string) {
     if (src && src.length !== 0) {
+      this.firstInit = false;
       this.htmlImg.src = src;
     }
   }
@@ -158,6 +159,7 @@ export default class TrueCropper {
    */
   public reset() {
     try {
+      this.firstInit = false;
       this.destroy();
       this.initializeCropper();
     } catch (error) {
@@ -234,6 +236,43 @@ export default class TrueCropper {
   }
 
   /**
+   * Get the value of the crop region.
+   * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
+   * @returns {number} - The value of the crop region.
+   */
+  public getValue(mode: SizeUnit | undefined = undefined) {
+    const calculationMode = mode || this.options.returnMode;
+
+    const notRoundedValues = () => {
+      if (calculationMode === "relative") {
+        return this.box.getValueRelative(this.ratio);
+      }
+      if (calculationMode === "percent") {
+        return this.box.getValuePercent();
+      }
+
+      return this.box.getValueReal();
+    };
+
+    const values = notRoundedValues();
+    return {
+      x: Math.round(values.x),
+      y: Math.round(values.y),
+      width: Math.round(values.width),
+      height: Math.round(values.height),
+    };
+  }
+
+  /**
+   * Retrieves the image properties.
+   * @returns {real: Size, relative: Size} An object containing the real and relative properties.
+   * @public
+   */
+  public getImageProps() {
+    return { real: this.real, relative: this.relative };
+  }
+
+  /**
    * Handles the callback when after initialization.
    */
   protected onInitializeCallback() {
@@ -298,34 +337,6 @@ export default class TrueCropper {
     } else {
       throw error;
     }
-  }
-
-  /**
-   * Get the value of the crop region.
-   * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
-   * @returns {number} - The value of the crop region.
-   */
-  protected getValue(mode: SizeUnit | undefined = undefined) {
-    const calculationMode = mode || this.options.returnMode;
-
-    const notRoundedValues = () => {
-      if (calculationMode === "relative") {
-        return this.box.getValueRelative(this.ratio);
-      }
-      if (calculationMode === "percent") {
-        return this.box.getValuePercent();
-      }
-
-      return this.box.getValueReal();
-    };
-
-    const values = notRoundedValues();
-    return {
-      x: Math.round(values.x),
-      y: Math.round(values.y),
-      width: Math.round(values.width),
-      height: Math.round(values.height),
-    };
   }
 
   /** ==============

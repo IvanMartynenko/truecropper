@@ -1,4 +1,4 @@
-![TrueCropper.js](https://raw.githubusercontent.com/IvanMartynenko/truecropper/main/static/logo.svg)
+## RealCropper.js
 
 ### A vanilla JavaScript image cropper that's lightweight, awesome, and has absolutely zero dependencies.
 
@@ -36,13 +36,17 @@ _Note: Don't forget to bundle or include trueCropper.css!_
 **In your HTML document:**
 
 ```html
-<div class="truecropper"><img src="path/to/image.jpg" id="truecropper"/></div>
+<img src="path/to/image.jpg" id="imageid"/>
+```
+or to prevent img replacement
+```html
+<div class="truecropper"><img src="path/to/image.jpg" id="imageid"/></div>
 ```
 
 **In your JavaScript file:**
 
 ```javascript
-var cropInstance = new TrueCropper('#truecropper', {
+var cropInstance = new TrueCropper('#imageid', {
   // ...options
 });
 ```
@@ -76,9 +80,9 @@ Constrain the crop region to a maximum size.
 
 * Type: `[width, height, unit?]`
 * Default: `null`
-* Example: `maxSize: [50, 50, '%']` (A maximum size of 50% of the image size)
+* Example: `maxSize: [50, 50, 'percent']` (A maximum size of 50% of the image size)
 
-_Note: `unit` accepts a value of **'px'** or **'%'**. Defaults to **'px'**._
+_Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
 
 
 
@@ -88,21 +92,31 @@ Constrain the crop region to a minimum size.
 
 - Type: `[width, height, unit?]`
 - Default: `null`
-- Example: `minSize: [20, 20, 'px']` (A minimum width and height of 20px)
+- Example: `minSize: [20, 20, 'real']` (A minimum width and height of 20px)
 
-_Note: `unit` accepts a value of **'px'** or **'%'**. Defaults to **'px'**._
+_Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
 
 
 
 #### **startSize**
 
-The starting size of the crop region when it is initialized.
+The starting size of the crop region when it is **first** initialized.
 
-- Type: `[width, height, unit?]`
-- Default: `[100, 100, '%']` (A starting crop region as large as possible)
-- Example: `startSize: [50, 50]` (A starting crop region of 50% of the image size)
+- Type: `[x, y, width, height, unit?]`
+- Default: `[0, 0, 100, 100, 'percent']` (A starting crop region as large as possible)
+- Example: `startSize: [0, 0, 50, 50, "real"]` (A starting crop region on 0x0:50x50)
 
-_Note: `unit` accepts a value of **'px'** or **'%'**. Defaults to **'%'**._
+_Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
+
+#### **defaultSize**
+
+The starting size of the crop region when it is **not first** initialized. Such as, instance.setImage() is called.
+
+- Type: `[x, y, width, height, unit?]`
+- Default: `[0, 0, 100, 100, 'percent']` (A starting crop region as large as possible)
+- Example: `defaultSize: [50, 50]` (A starting crop region of 50% of the image size)
+
+_Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
 
 
 
@@ -111,10 +125,10 @@ _Note: `unit` accepts a value of **'px'** or **'%'**. Defaults to **'%'**._
 A callback function that is called when the user starts modifying the crop region.
 
 * Type: `Function`
-* Arguments: `data = {x, y, width, height}`
+* Arguments: `instance = this, data = {x, y, width, height}`
 * Example:
 ```javascript
-onCropStart: function(data) {
+onCropStart: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
@@ -124,10 +138,10 @@ onCropStart: function(data) {
 A callback function that is called when the crop region changes.
 
 * Type: `Function`
-* Arguments: `data = {x, y, width, height}`
+* Arguments: `instance = this, data = {x, y, width, height}`
 * Example:
 ```javascript
-onCropMove: function(data) {
+onCropMove: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
@@ -137,23 +151,23 @@ onCropMove: function(data) {
 A callback function that is called when the user stops modifying the crop region.
 
 * Type: `Function`
-* Arguments: `data = {x, y, width, height}`
+* Arguments: `instance = this, data = {x, y, width, height}`
 * Example:
 ```javascript
-onCropEnd: function(data) {
+onCropEnd: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
 
 #### onInitialize
 
-A callback function that is called when the TrueCropper instance is fully initialized.
+A callback function that is called before when the TrueCropper instance draw the html object.
 
 * Type: `Function`
-* Arguments: The TrueCropper instance
+* Arguments: `instance = this, data = {x, y, width, height}`
 * Example:
 ```javascript
-onInitialize: function(instance) {
+onInitialize: function(instance, data) {
   // do things here
 }
 ```
@@ -165,10 +179,10 @@ Define how the crop region should be calculated.
 
 * Type: `String`
 * Default: `"real"`
-* Possible values: `"real"`, `"ratio"` or `"raw"`
+* Possible values: `"real"`, `"percent"` or `"relative"`
   * `real` returns the crop region values based on the size of the image's actual sizes. This ensures that the crop region values are the same regardless if the TrueCropper element is scaled or not.
-  * `ratio` returns the crop region values as a ratio between 0 to 1. e.g. For example, an `x, y` position at the center will be `{x: 0.5, y: 0.5}`.
-  * `raw` returns the crop region values as is based on the size of the TrueCropper element.
+  * `percent` returns the crop region values as a ratio. e.g. For example, an `x, y` position at the center will be `{x: 50, y: 50}`.
+  * `relative` returns the crop region values as is based on the size of the TrueCropper element.
 
 
 
@@ -183,7 +197,7 @@ var value = cropInstance.getValue();
 // value = {x: 21, y: 63: width: 120, height: 120}
 
 var ratio = cropInstance.getValue('ratio');
-// value = {x: 0.1, y: 0.3: width: 0.57, height: 0.57}
+// value = {x: 10, y: 30: width: 57, height: 57}
 ```
 
 #### destroy()
@@ -192,22 +206,23 @@ Destroys the TrueCropper instance and restores the original `img` element.
 
 #### setImage(src: string)
 
-Changes the image src. Returns the TrueCropper instance.
+Changes the image src.
 
 #### moveTo(x: number, y: number)
 
-Moves the crop region to the specified coordinates. Returns the TrueCropper instance.
+Moves the crop region to the specified coordinates.
 
 #### resizeTo(width: number, height: number, _origin?: Array_)
 
-Resizes the crop region to the specified size. `origin` is an optional argument that specifies the origin point (in ratio) to resize from in the format of `[x, y]`. Defaults to `[0.5, 0.5]` (center). Returns the TrueCropper instance.
+Resizes the crop region to the specified size. `origin` is an optional argument that specifies the origin point (in ratio) to resize from in the format of `[x, y]`. Defaults to `[0.5, 0.5]` (center).
 
 #### scaleBy(factor: number, _origin?: Array_)
 
-Scales the crop region by a factor. `origin` is an optional argument that specifies the origin point (in ratio) to resize from in the format of `[x, y]`. Defaults to `[0.5, 0.5]` (center). Returns the TrueCropper instance.
-
+Scales the crop region by a factor. `origin` is an optional argument that specifies the origin point (in ratio) to resize from in the format of `[x, y]`. Defaults to `[0.5, 0.5]` (center).
 #### reset()
 
-Resets the crop region to its original position and size. Returns the TrueCropper instance.
+Resets the crop region to default position and size. Returns the TrueCropper instance.
+#### getImageProps()
 
+Return the image props in format: `{ real: { width, height }, relative: { width, height } }`
 - - -

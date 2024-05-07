@@ -149,180 +149,195 @@ declare class TrueCropper {
      */
     scaleBy(factor: number, points?: Points): void;
     /**
-     * Handles the callback when after initialization.
-     */
-    protected onInitializeCallback(): void;
-    /**
-     * Handles the callback when cropping starts.
-     */
-    protected onCropStartCallback(): void;
-    /**
-     * Handles the callback when cropping is in progress.
-     */
-    protected onCropMoveCallback(): void;
-    /**
-     * Handles the callback when cropping ends.
-     */
-    protected onCropEndCallback(): void;
-    /**
-     * Handles errors encountered during operations.
-     * @param {TrueCropperHtmlError | TrueCropperImageError | TrueCropperOptionsError} error - The error object containing information about the error.
-     */
-    protected onErrorCallback(error: TrueCropperHtmlError | TrueCropperImageError | TrueCropperOptionsError): void;
-    /**
      * Get the value of the crop region.
      * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
      * @returns {number} - The value of the crop region.
      */
-    protected getValue(mode?: SizeUnit | undefined): {
+    getValue(mode?: SizeUnit | undefined): {
         x: number;
         y: number;
         width: number;
         height: number;
     };
-    /** ==============
-     *
-     *
-     *  Private methods
-     *
-     *
-     * ==============
-     */
-    private initializeObserver;
-    private initializeCropper;
-    private initialize;
-    private createDOM;
-    private calcContainerProps;
-    protected createNewBox(): void;
-    private updateRelativeSize;
-    private changeStatus;
     /**
-     * Draw visuals (border, handles, etc) for the current box.
-     */
-    private redraw;
-    private event;
-    private tryToCreateNewBox;
-    /**
-     * Executes when user begins dragging a handle.
-     */
-    private onHandleMoveStart;
-    /**
-     * Executes on handle move. Main logic to manage the movement of handles.
-     */
-    private onHandleMoveMoving;
-    /**
-     *  Executes when the handle move ends.
-     */
-    private onHandleMoveEnd;
-    /**
-     * Executes when user starts moving the crop region.
-     * @param {TrueCropperCoreRegionMoveEvent["data"]} data - contains the raw mouseX, mouseY coordinate
-     */
-    private onRegionMoveStart;
-    /**
-     * Executes when user moves the crop region.
-     */
-    private onRegionMoveMoving;
-    /**
-     * Executes when user stops moving the crop region (mouse up).
-     */
-    private onRegionMoveEnd;
-    /**
-     * Get the real(natural) mouse coordinates within the image container.
-     * @param {number} absMouseX - The absolute X coordinate of the mouse.
-     * @param {number} absMouseY - The absolute Y coordinate of the mouse.
-     * @returns {[number, number]} - The real(natural) X and Y coordinates within the image container.
-     */
-    private mouseCoordinates;
-    /**
-     * Sets a value to a dataset attribute of an HTML image element.
-     * @param {string} name - The name of the dataset attribute.
-     * @param {string | number} value - The value to set for the dataset attribute.
-     */
-    private setDataset;
-    private parseCallbackFunctions;
-    private setDatasetCropValues;
-}
-export default TrueCropper;
+     * Retrieves the image properties.
+     * @returns {real: Size, relative: Size} An object containing the real and relative properties.
+         * @public
+         */
+     getImageProps(): {
+         real: {
+             width: number;
+             height: number;
+         };
+         relative: {
+             width: number;
+             height: number;
+         };
+     };
+     /**
+      * Handles the callback when after initialization.
+      */
+     protected onInitializeCallback(): void;
+     /**
+      * Handles the callback when cropping starts.
+      */
+     protected onCropStartCallback(): void;
+     /**
+      * Handles the callback when cropping is in progress.
+      */
+     protected onCropMoveCallback(): void;
+     /**
+      * Handles the callback when cropping ends.
+      */
+     protected onCropEndCallback(): void;
+     /**
+      * Handles errors encountered during operations.
+      * @param {TrueCropperHtmlError | TrueCropperImageError | TrueCropperOptionsError} error - The error object containing information about the error.
+      */
+     protected onErrorCallback(error: TrueCropperHtmlError | TrueCropperImageError | TrueCropperOptionsError): void;
+     /** ==============
+      *
+      *
+      *  Private methods
+      *
+      *
+      * ==============
+      */
+     private initializeObserver;
+     private initializeCropper;
+     private initialize;
+     private createDOM;
+     private calcContainerProps;
+     protected createNewBox(): void;
+     private updateRelativeSize;
+     private changeStatus;
+     /**
+      * Draw visuals (border, handles, etc) for the current box.
+      */
+     private redraw;
+     private event;
+     private tryToCreateNewBox;
+     /**
+      * Executes when user begins dragging a handle.
+      */
+     private onHandleMoveStart;
+     /**
+      * Executes on handle move. Main logic to manage the movement of handles.
+      */
+     private onHandleMoveMoving;
+     /**
+      *  Executes when the handle move ends.
+      */
+     private onHandleMoveEnd;
+     /**
+      * Executes when user starts moving the crop region.
+      * @param {TrueCropperCoreRegionMoveEvent["data"]} data - contains the raw mouseX, mouseY coordinate
+      */
+     private onRegionMoveStart;
+     /**
+      * Executes when user moves the crop region.
+      */
+     private onRegionMoveMoving;
+     /**
+      * Executes when user stops moving the crop region (mouse up).
+      */
+     private onRegionMoveEnd;
+     /**
+      * Get the real(natural) mouse coordinates within the image container.
+      * @param {number} absMouseX - The absolute X coordinate of the mouse.
+      * @param {number} absMouseY - The absolute Y coordinate of the mouse.
+      * @returns {[number, number]} - The real(natural) X and Y coordinates within the image container.
+      */
+     private mouseCoordinates;
+     /**
+      * Sets a value to a dataset attribute of an HTML image element.
+      * @param {string} name - The name of the dataset attribute.
+      * @param {string | number} value - The value to set for the dataset attribute.
+      */
+     private setDataset;
+     private parseCallbackFunctions;
+     private setDatasetCropValues;
+    }
+    export default TrueCropper;
 
-declare type TrueCropperCoreCallbackEvent = TrueCropperCoreHandleStartEvent | TrueCropperCoreHandleMoveEvent | TrueCropperCoreHandleEndEvent | TrueCropperCoreRegionMoveEvent | TrueCropperCoreCreateNewBoxEvent;
+    declare type TrueCropperCoreCallbackEvent = TrueCropperCoreHandleStartEvent | TrueCropperCoreHandleMoveEvent | TrueCropperCoreHandleEndEvent | TrueCropperCoreRegionMoveEvent | TrueCropperCoreCreateNewBoxEvent;
 
-declare interface TrueCropperCoreCreateNewBoxEvent {
-    type: "createnewbox";
-    data: CreateNewBoxTypeEvent;
-}
+    declare interface TrueCropperCoreCreateNewBoxEvent {
+        type: "createnewbox";
+        data: CreateNewBoxTypeEvent;
+    }
 
-declare interface TrueCropperCoreHandleEndEvent {
-    type: "handleend";
-    data?: null;
-}
+    declare interface TrueCropperCoreHandleEndEvent {
+        type: "handleend";
+        data?: null;
+    }
 
-declare interface TrueCropperCoreHandleMoveEvent {
-    type: "handlemove";
-    data: Coordinates;
-}
+    declare interface TrueCropperCoreHandleMoveEvent {
+        type: "handlemove";
+        data: Coordinates;
+    }
 
-declare interface TrueCropperCoreHandleStartEvent {
-    type: "handlestart";
-    data: ActiveHandleType;
-}
+    declare interface TrueCropperCoreHandleStartEvent {
+        type: "handlestart";
+        data: ActiveHandleType;
+    }
 
-declare interface TrueCropperCoreRegionMoveEvent {
-    type: "regionstart" | "regionmove" | "regionend";
-    data: Coordinates;
-}
+    declare interface TrueCropperCoreRegionMoveEvent {
+        type: "regionstart" | "regionmove" | "regionend";
+        data: Coordinates;
+    }
 
-declare class TrueCropperHtmlError extends Error {
-    data: null;
-    constructor(key: keyof typeof errorMessage);
-}
+    declare class TrueCropperHtmlError extends Error {
+        data: null;
+        constructor(key: keyof typeof errorMessage);
+    }
 
-declare class TrueCropperImageError extends Error {
-    data: {
-        target: string;
-        coordinates: {
+    declare class TrueCropperImageError extends Error {
+        data: {
+            target: string;
+            coordinates: {
+                x: number;
+                y: number;
+            } | undefined;
+            targetSize: {
+                width: number;
+                height: number;
+            };
+            source: string;
+            sourceSize: {
+                width: number;
+                height: number;
+            };
+        };
+        constructor(message: string, data: IimageErrorData);
+        static startSize(target: string, coordinates: {
             x: number;
             y: number;
-        } | undefined;
-        targetSize: {
+        }, targetSize: {
             width: number;
             height: number;
-        };
-        source: string;
-        sourceSize: {
+        }, source: string, sourceSize: {
             width: number;
             height: number;
-        };
-    };
-    constructor(message: string, data: IimageErrorData);
-    static startSize(target: string, coordinates: {
-        x: number;
-        y: number;
-    }, targetSize: {
-        width: number;
-        height: number;
-    }, source: string, sourceSize: {
-        width: number;
-        height: number;
-    }): TrueCropperImageError;
-    static size(target: string, targetSize: {
-        width: number;
-        height: number;
-    }, source: string, sourceSize: {
-        width: number;
-        height: number;
-    }): TrueCropperImageError;
-}
+        }): TrueCropperImageError;
+        static size(target: string, targetSize: {
+            width: number;
+            height: number;
+        }, source: string, sourceSize: {
+            width: number;
+            height: number;
+        }): TrueCropperImageError;
+    }
 
-declare class TrueCropperOptionsError extends Error {
-    data: null;
-    constructor(message: string);
-    static aspectRatio(calculatedAspectRatio: number, aspectRatio: number, epsilon: number): TrueCropperOptionsError;
-    static new(name: string, object: string, positive?: boolean): TrueCropperOptionsError;
-}
+    declare class TrueCropperOptionsError extends Error {
+        data: null;
+        constructor(message: string);
+        static aspectRatio(calculatedAspectRatio: number, aspectRatio: number, epsilon: number): TrueCropperOptionsError;
+        static new(name: string, object: string, positive?: boolean): TrueCropperOptionsError;
+    }
 
-declare interface UnitProps {
-    unit: SizeUnit;
-}
+    declare interface UnitProps {
+        unit: SizeUnit;
+    }
 
-export { }
+    export { }
