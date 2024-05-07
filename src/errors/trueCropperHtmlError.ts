@@ -1,7 +1,7 @@
 const errorMessage = {
   srcEmpty: "Image src not provided",
   elementNotFound: "Unable to find element",
-  parentNotContainDiv: "parent element can be exists",
+  parentNotContainDiv: "Parent element can be exists",
 };
 
 export class TrueCropperHtmlError extends Error {

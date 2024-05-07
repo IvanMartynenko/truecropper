@@ -343,7 +343,7 @@ declare class TrueCropper {
     declare class TrueCropperOptionsError extends Error {
         data: null;
         constructor(message: string);
-        static aspectRatio(calculatedAspectRatio: number, aspectRatio: number, epsilon: number): TrueCropperOptionsError;
+        static aspectRatio(name: string, calculatedAspectRatio: number, aspectRatio: number, epsilon: number): TrueCropperOptionsError;
         static new(name: string, object: string, positive?: boolean): TrueCropperOptionsError;
     }
 

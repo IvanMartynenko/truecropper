@@ -1,23 +1,23 @@
 var _ = Object.defineProperty;
 var P = (n, t, e) => t in n ? _(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
 var o = (n, t, e) => (P(n, typeof t != "symbol" ? t + "" : t, e), e);
-const g = "truecropper", c = {
-  base: g,
-  img: `${g}__image`,
-  background: `${g}__background`,
-  new: `${g}__new-selection`,
-  selection: `${g}__selection`,
-  handle: `${g}__handle`,
-  hanleds: `${g}__handles`,
-  valueX: `${g}X`,
-  valueY: `${g}Y`,
-  valueWidth: `${g}Width`,
-  valueHeight: `${g}Height`,
-  valueStatus: `${g}Status`
+const w = "truecropper", c = {
+  base: w,
+  img: `${w}__image`,
+  background: `${w}__background`,
+  new: `${w}__new-selection`,
+  selection: `${w}__selection`,
+  handle: `${w}__handle`,
+  hanleds: `${w}__handles`,
+  valueX: `${w}X`,
+  valueY: `${w}Y`,
+  valueWidth: `${w}Width`,
+  valueHeight: `${w}Height`,
+  valueStatus: `${w}Status`
 }, q = {
   srcEmpty: "Image src not provided",
   elementNotFound: "Unable to find element",
-  parentNotContainDiv: "parent element can be exists"
+  parentNotContainDiv: "Parent element can be exists"
 };
 class y extends Error {
   constructor(e) {
@@ -60,18 +60,18 @@ class x extends Error {
     return new this(r, a);
   }
 }
-class w extends Error {
+class g extends Error {
   constructor(e) {
     super(e);
     o(this, "data");
-    Object.setPrototypeOf(this, w.prototype), this.name = "TrueCropperOptionsError", this.data = null;
+    Object.setPrototypeOf(this, g.prototype), this.name = "TrueCropperOptionsError", this.data = null;
   }
-  static aspectRatio(e, i, s) {
-    const h = `The specified aspect ratio (${i}) and calculated minimum dimensions (width/height = ${e}) are greater than (${s}). This might be due to a rounding error on the server side or incorrect minimum sizes.`;
-    return new this(h);
+  static aspectRatio(e, i, s, h) {
+    const r = `The specified aspect ratio (${s}) and calculated ${e} dimensions (width/height = ${i}) are greater than (${h}). This might be due to a rounding error on the server side or incorrect minimum sizes.`;
+    return new this(r);
   }
   static new(e, i, s = !0) {
-    const h = s ? `${e} must be of type ${i}` : `${e} must not be of type ${i}`;
+    const h = s ? `${e} must be of type ${i}` : `${e} must not be ${i}`;
     return new this(h);
   }
 }
@@ -88,10 +88,10 @@ const Z = (n) => {
   if (!e)
     throw new y("parentNotContainDiv");
   return e.classList.contains(c.base) || (e = null), [t, e];
-}, b = (n, t = void 0) => {
+}, E = (n, t = void 0) => {
   const e = document.createElement("div");
   return e.className = n, t && t.appendChild(e), e;
-}, R = (n, t) => {
+}, W = (n, t) => {
   if (t.savedCoordinate < 0)
     return { flipped: !1, coordinate: null, size: null, point: 0.5 };
   const e = n < t.savedCoordinate, i = t.left !== e, s = t.savedCoordinate, h = Math.abs(t.savedCoordinate - n), r = Number(e);
@@ -102,7 +102,7 @@ const Z = (n) => {
     point: r
   };
 }, G = (n, t, e) => {
-  const i = R(n.x, t), s = R(n.y, e);
+  const i = W(n.x, t), s = W(n.y, e);
   return {
     flipped: { x: i.flipped, y: s.flipped },
     newBox: {
@@ -168,7 +168,7 @@ const Z = (n) => {
       "imageSize",
       s
     );
-}, N = ({
+}, D = ({
   size: n,
   minSize: t,
   maxSize: e,
@@ -176,10 +176,10 @@ const Z = (n) => {
 }) => {
   const s = { ...n };
   return e && (s.width > e.width && (s.width = e.width, s.height = i ? e.width / i : s.height), s.height > e.height && (s.width = i ? e.height * i : s.width, s.height = e.height)), t && (s.width < t.width && (s.width = t.width, s.height = i ? t.width / i : s.height), s.height < t.height && (s.width = i ? t.height * i : s.width, s.height = t.height)), s;
-}, W = (n, t, e) => {
+}, U = (n, t, e) => {
   const i = n * t;
   return { width: i, height: i / e };
-}, U = (n, t, e) => {
+}, j = (n, t, e) => {
   const i = n * t;
   return { width: i * e, height: i };
 }, tt = (n, t, e) => {
@@ -187,27 +187,27 @@ const Z = (n) => {
   if (e === 0)
     return i;
   const s = n.isMultuAxis ? i.height * e >= i.width : n.isVerticalMovement, h = n.points.x === 1 || n.points.x === 0 ? 1 : 2, r = n.points.y === 1 || n.points.y === 0 ? 1 : 2;
-  return s ? i = { width: i.height * e, height: i.height } : i = { width: i.width, height: i.width / e }, n.coordinates.x + i.width * (1 - n.points.x) > t.width && (i = W(
+  return s ? i = { width: i.height * e, height: i.height } : i = { width: i.width, height: i.width / e }, n.coordinates.x + i.width * (1 - n.points.x) > t.width && (i = U(
     t.width - n.coordinates.x,
     h,
     e
-  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = U(
+  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = j(
     t.height - n.coordinates.y,
     r,
     e
-  )), n.coordinates.x - i.width * n.points.x < 0 && (i = W(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = U(n.coordinates.y, r, e)), i;
+  )), n.coordinates.x - i.width * n.points.x < 0 && (i = U(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = j(n.coordinates.y, r, e)), i;
 }, I = (n, t, e) => {
   const i = { ...n };
   return e && !i.width && !i.height && (e > 1 ? i.height = t.height : i.width = t.width), i.width || (i.width = e ? i.height * e : t.width), i.height || (i.height = e ? i.width / e : t.height), i;
 }, et = (n, t, e) => {
   let i = { ...n };
-  return e && (i.width > i.height * e ? i.width = i.height * e : i.height = i.width / e), i = N({
+  return e && (i.width > i.height * e ? i.width = i.height * e : i.height = i.width / e), i = D({
     size: i,
     maxSize: t,
     aspectRatio: e
   }), i;
 }, it = (n, t, e, i, s, h, r, a) => {
-  const l = { ...t }, d = { ...n }, m = Math.min(i.width, s.width - n.x), f = Math.min(i.height, s.height - n.y), p = N({
+  const l = { ...t }, d = { ...n }, m = Math.min(i.width, s.width - n.x), f = Math.min(i.height, s.height - n.y), p = D({
     size: l,
     maxSize: { width: m, height: f },
     minSize: e,
@@ -383,7 +383,7 @@ class st {
    */
   adjustAndCalculateSize(t) {
     const e = tt(t, this.imgSize, this.aspectRatio);
-    return N({
+    return D({
       size: e,
       minSize: this.minSize,
       maxSize: this.maxSize,
@@ -436,7 +436,7 @@ class ot {
   constructor(t, e) {
     o(this, "nested", []);
     for (let i = 0; i < 4; i++) {
-      const s = b(`${e}-${i}`, t);
+      const s = E(`${e}-${i}`, t);
       this.nested.push(s);
     }
   }
@@ -468,7 +468,7 @@ class rt {
     o(this, "startMouse", { mouseX: 0, mouseY: 0 });
     o(this, "newBoxCreated", !1);
     o(this, "listener");
-    this.eventBus = i, this.el = b(e, t), s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener), this.mouseEvent()) : this.hide();
+    this.eventBus = i, this.el = E(e, t), s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener), this.mouseEvent()) : this.hide();
   }
   hide() {
     this.el.style.display = "none";
@@ -511,7 +511,7 @@ class at {
     o(this, "el");
     o(this, "enable");
     o(this, "listener");
-    this.eventBus = i, this.el = b(e, t), this.enable = s, s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.el.style.cursor = "default";
+    this.eventBus = i, this.el = E(e, t), this.enable = s, s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.el.style.cursor = "default";
   }
   transform(t) {
     this.el.style.transform = `translate(${t.x}px, ${t.y}px)`, this.el.style.width = `${t.width}px`, this.el.style.height = `${t.height}px`;
@@ -550,7 +550,7 @@ class at {
 }
 const lt = ["real", "relative", "percent"];
 var z = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(z || {});
-const E = 1e-4, dt = c.base;
+const S = 1e-4, dt = c.base;
 function ct(n) {
   return n.charAt(0).toUpperCase() + n.slice(1);
 }
@@ -561,41 +561,41 @@ function u(n, t, e, i = !1) {
   if (v(t))
     return e;
   if (typeof t != "number")
-    throw w.new(n, "number");
+    throw g.new(n, "number");
   if (Number.isNaN(t))
-    throw w.new(n, "NaN", !1);
+    throw g.new(n, "NaN", !1);
   if (i ? t < 0 : t <= 0)
-    throw w.new(n, "positive");
+    throw g.new(n, "positive");
   return t;
 }
 function k(n, t, e) {
   if (v(t))
     return e;
   if (typeof t != "boolean")
-    throw w.new(n, "boolean");
+    throw g.new(n, "boolean");
   return t;
 }
-function M(n, t, e) {
+function b(n, t, e) {
   if (v(t))
     return e;
   if (typeof t != "string" || !lt.includes(t))
-    throw w.new(n, "SizeUnit");
+    throw g.new(n, "SizeUnit");
   return t;
 }
 const ut = (n, t) => {
-  var s, h, r, a, l, d, m, f, p, D, L, X, H, A, Y, T;
+  var s, h, r, a, l, d, m, f, p, L, X, A, H, Y, T, O;
   const e = t || {};
   if (typeof e != "object" || e === null)
-    throw w.new("options", "object");
-  const i = (F, O) => {
-    const S = n[`${dt}${ct(F)}`];
-    if (!S)
-      return O;
-    const C = S.toLowerCase();
-    if (C === "null" || C === "undefined" || C === "nil")
-      return O;
-    const V = Number.parseFloat(S);
-    return V.toString() === S ? V : C === "true" ? !0 : C === "false" ? !1 : S;
+    throw g.new("options", "object");
+  const i = (F, V) => {
+    const C = n[`${dt}${ct(F)}`];
+    if (!C)
+      return V;
+    const M = C.toLowerCase();
+    if (M === "null" || M === "undefined" || M === "nil")
+      return V;
+    const R = Number.parseFloat(C);
+    return R.toString() === C ? R : M === "true" ? !0 : M === "false" ? !1 : C;
   };
   return {
     aspectRatio: i("aspectRatio", e.aspectRatio),
@@ -618,33 +618,33 @@ const ut = (n, t) => {
       x: i("startSizeX", (m = e.startSize) == null ? void 0 : m.x),
       y: i("startSizeY", (f = e.startSize) == null ? void 0 : f.y),
       width: i("startSizeWidth", (p = e.startSize) == null ? void 0 : p.width),
-      height: i("startSizeHeight", (D = e.startSize) == null ? void 0 : D.height),
-      unit: i("startSizeUnit", (L = e.startSize) == null ? void 0 : L.unit)
+      height: i("startSizeHeight", (L = e.startSize) == null ? void 0 : L.height),
+      unit: i("startSizeUnit", (X = e.startSize) == null ? void 0 : X.unit)
     },
     defaultSize: {
-      x: i("defaultSizeX", (X = e.defaultSize) == null ? void 0 : X.x),
+      x: i("defaultSizeX", (A = e.defaultSize) == null ? void 0 : A.x),
       y: i("defaultSizeY", (H = e.defaultSize) == null ? void 0 : H.y),
-      width: i("defaultSizeWidth", (A = e.defaultSize) == null ? void 0 : A.width),
-      height: i("defaultSizeHeight", (Y = e.defaultSize) == null ? void 0 : Y.height),
-      unit: i("defaultSizeUnit", (T = e.defaultSize) == null ? void 0 : T.unit)
+      width: i("defaultSizeWidth", (Y = e.defaultSize) == null ? void 0 : Y.width),
+      height: i("defaultSizeHeight", (T = e.defaultSize) == null ? void 0 : T.height),
+      unit: i("defaultSizeUnit", (O = e.defaultSize) == null ? void 0 : O.unit)
     }
   };
-}, j = (n, t, e) => Math.abs(n - t) < e, gt = (n) => {
+}, B = (n, t, e) => Math.abs(n - t) < e, gt = (n) => {
   var r;
   const t = u("aspectRatio", n.aspectRatio, 0), e = {
     width: u("minSizeWidth", n.minSize.width, 0),
     height: u("minSizeHeight", n.minSize.height, 0),
-    unit: M("minSizeUnit", (r = n.minSize) == null ? void 0 : r.unit, "real")
+    unit: b("minSizeUnit", (r = n.minSize) == null ? void 0 : r.unit, "real")
   }, i = {
     width: u("maxSizeWidth", n.maxSize.width, 0),
     height: u("maxSizeHeight", n.maxSize.height, 0),
-    unit: M("maxSizeUnit", n.maxSize.unit, "real")
+    unit: b("maxSizeUnit", n.maxSize.unit, "real")
   }, s = {
     x: u("startSizeX", n.startSize.x, 0, !0),
     y: u("startSizeY", n.startSize.y, 0, !0),
     width: u("startSizeWidth", n.startSize.width, 0),
     height: u("startSizeHeight", n.startSize.height, 0),
-    unit: M("startSizeUnit", n.startSize.unit, "real"),
+    unit: b("startSizeUnit", n.startSize.unit, "real"),
     centeredX: v(n.startSize.x),
     centeredY: v(n.startSize.y),
     allowChange: !1
@@ -655,7 +655,7 @@ const ut = (n, t) => {
     y: u("defaultSizeY", n.defaultSize.y, 0, !0),
     width: u("defaultSizeWidth", n.defaultSize.width, 0),
     height: u("defaultSizeHeight", n.defaultSize.height, 0),
-    unit: M("defaultSizeUnit", n.defaultSize.unit, "real"),
+    unit: b("defaultSizeUnit", n.defaultSize.unit, "real"),
     centeredX: v(n.defaultSize.x),
     centeredY: v(n.defaultSize.y),
     allowChange: !1
@@ -663,20 +663,32 @@ const ut = (n, t) => {
   if (h.allowChange = h.width === 0 && h.height === 0, t) {
     if (e.width && e.height) {
       const a = e.width / e.height;
-      if (!j(a, t, E))
-        throw w.aspectRatio(
+      if (!B(a, t, S))
+        throw g.aspectRatio(
+          "minimum",
           a,
           t,
-          E
+          S
         );
     }
     if (s.width && s.height) {
       const a = s.width / s.height;
-      if (!j(a, t, E))
-        throw w.aspectRatio(
+      if (!B(a, t, S))
+        throw g.aspectRatio(
+          "startSize",
           a,
           t,
-          E
+          S
+        );
+    }
+    if (h.width && h.height) {
+      const a = h.width / h.height;
+      if (!B(a, t, S))
+        throw g.aspectRatio(
+          "defaultSize",
+          a,
+          t,
+          S
         );
     }
   }
@@ -690,7 +702,7 @@ const ut = (n, t) => {
     ),
     allowMove: k("allowMove", n.allowMove, !0),
     allowResize: k("allowResize", n.allowResize, !0),
-    returnMode: M("returnMode", n.returnMode, "real"),
+    returnMode: b("returnMode", n.returnMode, "real"),
     minSize: e,
     maxSize: i,
     firstInitSize: s,
@@ -704,7 +716,7 @@ class wt {
     o(this, "el");
     o(this, "enable");
     o(this, "listener");
-    this.position = i.position, this.eventBus = s, this.enable = h, this.el = b(e, t), this.el.style.cursor = i.cursor, h ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.hide();
+    this.position = i.position, this.eventBus = s, this.enable = h, this.el = E(e, t), this.el.style.cursor = i.cursor, h ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.hide();
   }
   show() {
     this.el.style.display = "block";
@@ -758,7 +770,7 @@ class ft {
   constructor(t, e, i, s, h) {
     o(this, "el");
     o(this, "handles", []);
-    this.el = b(e, t);
+    this.el = E(e, t);
     for (const r of mt) {
       const a = new wt(
         this.el,
@@ -791,7 +803,7 @@ class ft {
     return t ? e ? this.handles[0] : this.handles[6] : e ? this.handles[2] : this.handles[4];
   }
 }
-const B = { width: 0, height: 0 };
+const N = { width: 0, height: 0 };
 class zt {
   constructor(t, e) {
     o(this, "replaceDOM", !1);
@@ -805,9 +817,9 @@ class zt {
     o(this, "box");
     o(this, "currentMove");
     o(this, "activeHandle");
-    o(this, "real", B);
-    o(this, "relative", B);
-    o(this, "ratio", B);
+    o(this, "real", N);
+    o(this, "relative", N);
+    o(this, "ratio", N);
     o(this, "firstInit", !0);
     o(this, "isDomCreated", !1);
     o(this, "status", z.waiting);
@@ -827,7 +839,7 @@ class zt {
       const h = ut(this.htmlImg.dataset, e);
       this.options = gt(h), this.initializeCropper();
     } catch (i) {
-      if (i instanceof y || i instanceof w)
+      if (i instanceof y || i instanceof g)
         this.onErrorCallback(i);
       else
         throw i;
@@ -868,7 +880,7 @@ class zt {
     try {
       this.firstInit = !1, this.destroy(), this.initializeCropper();
     } catch (t) {
-      if (t instanceof y || t instanceof w || t instanceof x)
+      if (t instanceof y || t instanceof g || t instanceof x)
         this.onErrorCallback(t);
       else
         throw t;

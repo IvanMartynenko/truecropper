@@ -248,17 +248,29 @@ export const prepareOptions = (options: ReturnType<typeof parseOptions>) => {
       const calculatedAspectRatio = minSize.width / minSize.height;
       if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
         throw TrueCropperOptionsError.aspectRatio(
+          "minimum",
           calculatedAspectRatio,
           aspectRatio,
           EPSILON,
         );
       }
     }
-    // FixThis change erro message
     if (firstInitSize.width && firstInitSize.height) {
       const calculatedAspectRatio = firstInitSize.width / firstInitSize.height;
       if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
         throw TrueCropperOptionsError.aspectRatio(
+          "startSize",
+          calculatedAspectRatio,
+          aspectRatio,
+          EPSILON,
+        );
+      }
+    }
+    if (startSize.width && startSize.height) {
+      const calculatedAspectRatio = startSize.width / startSize.height;
+      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
+        throw TrueCropperOptionsError.aspectRatio(
+          "defaultSize",
           calculatedAspectRatio,
           aspectRatio,
           EPSILON,
