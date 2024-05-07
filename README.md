@@ -71,13 +71,6 @@ var data = cropInstance.getValue();
 // data = {x: 20, y: 20: width: 120, height: 120}
 ```
 
-## Statuses
-
-- waiting: Waiting to initialize
-- ready: Ready to work
-- reloading: Image uploading in progress
-- error: Error initializing. See errors section.
-
 ## Options
 
 _The options can be loaded from data attribute of image._
@@ -313,6 +306,17 @@ Get status of truecropper instance.
 #### setValue({ x: number, y: number, width: number, height: number })
 
 Set the crop region by properties.
+
+## Statuses
+
+The library sets its own status in the dataset. Or the status can be obtained using the `getStatus()` method. 
+
+Available statuses:
+
+- waiting: Waiting to initialize
+- ready: Ready to work
+- reloading: Image uploading in progress
+- error: Error initializing. See errors section.
 
 
 ## Errors
