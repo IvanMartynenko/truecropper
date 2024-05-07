@@ -63,11 +63,11 @@ var data = cropInstance.getValue();
 ```
 
 ## Statuses
+
 - waiting: Waiting to initialize
 - ready: Ready to work
 - reloading: Image uploading in progress
-- error: Error initializing. Ekg minSize > maxSize or other. See errors section.
-
+- error: Error initializing. See errors section.
 
 ## Options
 
@@ -100,7 +100,7 @@ Constrain the crop region to a minimum size.
 - Type: `[width, height, unit?]`
 - Default: `null`
 - Example: `minSize: [20, 20, 'real']` (A minimum width and height of 20px)
-- Dataset attribute names: [`truecropper-min-size-width`, `truecropper-min-size-height`, `truecropper-mni-size-unit`]
+- Dataset attribute names: [`truecropper-min-size-width`, `truecropper-min-size-height`, `truecropper-min-size-unit`]
 
 _Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
 
@@ -138,6 +138,60 @@ Define how the crop region should be calculated.
   - `relative` returns the crop region values as is based on the size of the TrueCropper element.
 - Dataset attribute name: [`truecropper-return-mode`]
 
+#### **allowFlip**
+
+Allow crop region to flip.
+
+- Type: `Boolean`
+- Default: `true`
+- Example: `allowFlip: false`
+- Dataset attribute name: [`truecropper-allow-flip`]
+
+#### **allowNewSelection**
+
+Allow create new crop region.
+
+- Type: `Boolean`
+- Default: `true`
+- Example: `allowNewSelection: false`
+- Dataset attribute name: [`truecropper-allow-allow-new-selection`]
+
+#### **allowMove**
+
+Allow crop region to move.
+
+- Type: `Boolean`
+- Default: `true`
+- Example: `allowMove: true`
+- Dataset attribute name: [`truecropper-allow-move`]
+
+#### **allowResize**
+
+Allow crop region to resize.
+
+- Type: `Boolean`
+- Default: `true`
+- Example: `allowResize: true`
+- Dataset attribute name: [`truecropper-allow-resize`]
+
+## Options callback functions
+
+#### onInitialize
+
+A callback function that is called before when the TrueCropper instance draw the html object.
+
+- Type: `Function`
+- Arguments: `instance = this, data = {x, y, width, height}`
+- Example:
+
+```javascript
+onInitialize: function(instance, data) {
+  // do things here
+}
+```
+
+- Dataset attribute name: no implementation
+
 #### **onCropStart**
 
 A callback function that is called when the user starts modifying the crop region.
@@ -151,6 +205,7 @@ onCropStart: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
+
 - Dataset attribute name: no implementation
 
 #### **onCropMove**
@@ -166,6 +221,7 @@ onCropMove: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
+
 - Dataset attribute name: no implementation
 
 #### **onCropEnd**
@@ -181,19 +237,20 @@ onCropEnd: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
+
 - Dataset attribute name: no implementation
 
-#### onInitialize
+#### **onError**
 
-A callback function that is called before when the TrueCropper instance draw the html object.
+A callback function that is called when an error occurs during initialization. See errors section.
 
 - Type: `Function`
-- Arguments: `instance = this, data = {x, y, width, height}`
+- Arguments: `instance = this, data = { type: string, message: string, data: { null | target: string, coordinates?: { x: number; y: number; }, targetSize: { width: number; height: number; }, source: string; sourceSize: { width: number; height: number; }; }  }`
 - Example:
 
 ```javascript
-onInitialize: function(instance, data) {
-  // do things here
+onError: function(instance, data) {
+  console.error(data.message);
 }
 ```
 - Dataset attribute name: no implementation
@@ -246,5 +303,4 @@ Get status of truecropper instance.
 
 #### setValue({ x: number, y: number, width: number, height: number })
 
-Set the crop region by properties.
----
+## Set the crop region by properties.
