@@ -143,7 +143,9 @@ export default class TrueCropper {
    * @param {String} src
    */
   public setImage(src: string) {
-    this.htmlImg.src = src;
+    if (src && src.length !== 0) {
+      this.htmlImg.src = src;
+    }
   }
 
   /**
@@ -152,7 +154,7 @@ export default class TrueCropper {
   public reset() {
     try {
       this.destroy();
-      this.initialize();
+      this.initializeCropper();
     } catch (error) {
       if (
         error instanceof TrueCropperHtmlError ||
@@ -171,6 +173,7 @@ export default class TrueCropper {
    */
   public destroy() {
     if (this.isDomCreated) {
+      this.observer.unobserve(this.htmlImg);
       this.newSelection.destroy();
       this.handles.destroy();
       this.selection.destroy();
