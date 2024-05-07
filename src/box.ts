@@ -42,6 +42,16 @@ export default class Box {
   }
 
   /**
+   * Sets the value of coordinates and size properties based on the provided BoxProps object.
+   * @param {BoxProps} box - The BoxProps object containing x, y, width, and height properties.
+   * @returns {void}
+   */
+  public setValue(box: BoxProps) {
+    this.coordinates = { x: box.x, y: box.y };
+    this.size = { width: box.width, height: box.height };
+  }
+
+  /**
    * Moves the box to the specified coordinates within the boundaries of the image.
    * @param {Coordinates} coordinates - The new x and y coordinates for the box.
    * @returns {void}

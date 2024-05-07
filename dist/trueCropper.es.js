@@ -238,6 +238,14 @@ class st {
     this.coordinates = { ...t }, this.size = { ...e }, this.minSize = { ...i }, this.maxSize = { ...s }, this.imgSize = { ...h }, this.aspectRatio = r;
   }
   /**
+   * Sets the value of coordinates and size properties based on the provided BoxProps object.
+   * @param {BoxProps} box - The BoxProps object containing x, y, width, and height properties.
+   * @returns {void}
+   */
+  setValue(t) {
+    this.coordinates = { x: t.x, y: t.y }, this.size = { width: t.width, height: t.height };
+  }
+  /**
    * Moves the box to the specified coordinates within the boundaries of the image.
    * @param {Coordinates} coordinates - The new x and y coordinates for the box.
    * @returns {void}
@@ -541,16 +549,16 @@ class at {
   }
 }
 const lt = ["real", "relative", "percent"];
-var v = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(v || {});
+var z = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(z || {});
 const E = 1e-4, dt = "cropper";
 function ct(n) {
   return n.charAt(0).toUpperCase() + n.slice(1);
 }
-function z(n) {
+function v(n) {
   return n == null;
 }
 function c(n, t, e, i = !1) {
-  if (z(t))
+  if (v(t))
     return e;
   if (typeof t != "number")
     throw w.new(n, "number");
@@ -561,14 +569,14 @@ function c(n, t, e, i = !1) {
   return t;
 }
 function k(n, t, e) {
-  if (z(t))
+  if (v(t))
     return e;
   if (typeof t != "boolean")
     throw w.new(n, "boolean");
   return t;
 }
 function M(n, t, e) {
-  if (z(t))
+  if (v(t))
     return e;
   if (typeof t != "string" || !lt.includes(t))
     throw w.new(n, "SizeUnit");
@@ -637,8 +645,8 @@ const ut = (n, t) => {
     width: c("startSizeWidth", n.startSize.width, 0),
     height: c("startSizeHeight", n.startSize.height, 0),
     unit: M("startSizeUnit", n.startSize.unit, "real"),
-    centeredX: z(n.startSize.x),
-    centeredY: z(n.startSize.y),
+    centeredX: v(n.startSize.x),
+    centeredY: v(n.startSize.y),
     allowChange: !1
   };
   s.allowChange = s.width === 0 && s.height === 0;
@@ -648,8 +656,8 @@ const ut = (n, t) => {
     width: c("defaultSizeWidth", n.defaultSize.width, 0),
     height: c("defaultSizeHeight", n.defaultSize.height, 0),
     unit: M("defaultSizeUnit", n.defaultSize.unit, "real"),
-    centeredX: z(n.defaultSize.x),
-    centeredY: z(n.defaultSize.y),
+    centeredX: v(n.defaultSize.x),
+    centeredY: v(n.defaultSize.y),
     allowChange: !1
   };
   if (h.allowChange = h.width === 0 && h.height === 0, t) {
@@ -783,8 +791,8 @@ class ft {
     return t ? e ? this.handles[0] : this.handles[6] : e ? this.handles[2] : this.handles[4];
   }
 }
-const B = { width: 1, height: 1 };
-class vt {
+const B = { width: 0, height: 0 };
+class zt {
   constructor(t, e) {
     o(this, "replaceDOM", !1);
     o(this, "htmlContainer");
@@ -802,7 +810,7 @@ class vt {
     o(this, "ratio", B);
     o(this, "firstInit", !0);
     o(this, "isDomCreated", !1);
-    o(this, "status", v.waiting);
+    o(this, "status", z.waiting);
     o(this, "eventBus", this.event.bind(this));
     o(this, "observer");
     o(this, "callbacks", {
@@ -815,7 +823,7 @@ class vt {
     try {
       this.parseCallbackFunctions(e);
       const [i, s] = Z(t);
-      this.htmlImg = i, s ? this.htmlContainer = s : this.replaceDOM = !0, this.changeStatus(v.waiting);
+      this.htmlImg = i, s ? this.htmlContainer = s : this.replaceDOM = !0, this.changeStatus(z.waiting);
       const h = ut(this.htmlImg.dataset, e);
       this.options = gt(h), this.initializeCropper();
     } catch (i) {
@@ -899,6 +907,14 @@ class vt {
     this.box.scale(t, e), this.redraw(), this.onCropEndCallback();
   }
   /**
+   * Sets the value of a box.
+   * @param {BoxProps} box - The box object containing properties to set.
+   * @public
+   */
+  setValue(t) {
+    this.box.setValue(t), this.onCropEndCallback();
+  }
+  /**
    * Get the value of the crop region.
    * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
    * @returns {number} - The value of the crop region.
@@ -919,6 +935,13 @@ class vt {
    */
   getImageProps() {
     return { real: this.real, relative: this.relative };
+  }
+  /**
+   * Retrieves the status of the instance.
+   * @returns {Status} The status of the instance.
+   */
+  getStatus() {
+    return this.status;
   }
   /**
    * Handles the callback when after initialization.
@@ -950,7 +973,7 @@ class vt {
    * @param {TrueCropperHtmlError | TrueCropperImageError | TrueCropperOptionsError} error - The error object containing information about the error.
    */
   onErrorCallback(t) {
-    this.changeStatus(v.error);
+    this.changeStatus(z.error);
     const e = {
       type: t.name,
       message: t.message,
@@ -980,13 +1003,13 @@ class vt {
   initializeCropper() {
     this.initializeObserver(), this.htmlImg.width !== 0 && this.htmlImg.height !== 0 && this.initialize(), this.htmlImg.onload = () => {
       this.changeStatus(
-        this.status === v.waiting ? v.waiting : v.reloading
+        this.status === z.waiting ? z.waiting : z.reloading
       ), this.observer.unobserve(this.htmlImg), this.initialize();
     };
   }
   initialize() {
     try {
-      this.createDOM(), this.calcContainerProps(), this.updateRelativeSize(), this.createNewBox(), this.onInitializeCallback(), this.observer.observe(this.htmlImg), this.changeStatus(v.ready), this.onCropEndCallback();
+      this.createDOM(), this.calcContainerProps(), this.updateRelativeSize(), this.createNewBox(), this.onInitializeCallback(), this.observer.observe(this.htmlImg), this.changeStatus(z.ready), this.onCropEndCallback();
     } catch (t) {
       if (t instanceof x)
         this.onErrorCallback(t);
@@ -1185,6 +1208,6 @@ class vt {
   }
 }
 export {
-  vt as default
+  zt as default
 };
 //# sourceMappingURL=trueCropper.es.js.map

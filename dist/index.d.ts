@@ -149,6 +149,12 @@ declare class TrueCropper {
      */
     scaleBy(factor: number, points?: Points): void;
     /**
+     * Sets the value of a box.
+     * @param {BoxProps} box - The box object containing properties to set.
+     * @public
+     */
+    setValue(box: BoxProps): void;
+    /**
      * Get the value of the crop region.
      * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
      * @returns {number} - The value of the crop region.
@@ -174,6 +180,11 @@ declare class TrueCropper {
              height: number;
          };
      };
+     /**
+      * Retrieves the status of the instance.
+      * @returns {Status} The status of the instance.
+      */
+     getStatus(): Status;
      /**
       * Handles the callback when after initialization.
       */

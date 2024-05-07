@@ -40,7 +40,7 @@ import {
 /**
  * Core class for TrueCropper containing most of its functional logic.
  */
-const defaultSize = { width: 1, height: 1 };
+const defaultSize = { width: 0, height: 0 };
 export default class TrueCropper {
   private replaceDOM = false;
   private htmlContainer!: HTMLDivElement;
@@ -236,6 +236,18 @@ export default class TrueCropper {
   }
 
   /**
+   * Sets the value of a box.
+   * @param {BoxProps} box - The box object containing properties to set.
+   * @public
+   */
+  public setValue(box: BoxProps) {
+    this.box.setValue(box);
+
+    // Call the callback
+    this.onCropEndCallback();
+  }
+
+  /**
    * Get the value of the crop region.
    * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
    * @returns {number} - The value of the crop region.
@@ -270,6 +282,14 @@ export default class TrueCropper {
    */
   public getImageProps() {
     return { real: this.real, relative: this.relative };
+  }
+
+  /**
+   * Retrieves the status of the instance.
+   * @returns {Status} The status of the instance.
+   */
+  public getStatus() {
+    return this.status;
   }
 
   /**
