@@ -5,10 +5,11 @@
 // Tolerance value for floating-point comparison
 const EPSILON = 0.0001;
 
+import { CONSTANTS } from "./constant";
 import { TrueCropperOptionsError } from "./errors";
 import { OptionsPropsValuesType, SIZE_UNIT, SizeUnit } from "./types";
 
-const PREFIX = "cropper" as const;
+const PREFIX = CONSTANTS.base;
 
 /**
  * Capitalizes the first letter of a string.

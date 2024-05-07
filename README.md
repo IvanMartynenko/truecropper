@@ -80,6 +80,7 @@ Constrain the crop region to an aspect ratio.
 - Type: `Number`
 - Default: `null`
 - Example: `aspectRatio: 1` (Square)
+- Dataset attribute name: [`truecropper-aspect-ratio`]
 
 #### **maxSize**
 
@@ -88,6 +89,7 @@ Constrain the crop region to a maximum size.
 - Type: `[width, height, unit?]`
 - Default: `null`
 - Example: `maxSize: [50, 50, 'percent']` (A maximum size of 50% of the image size)
+- Dataset attribute names: [`truecropper-max-size-width`, `truecropper-max-size-height`, `truecropper-max-size-unit`]
 
 _Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
 
@@ -98,6 +100,7 @@ Constrain the crop region to a minimum size.
 - Type: `[width, height, unit?]`
 - Default: `null`
 - Example: `minSize: [20, 20, 'real']` (A minimum width and height of 20px)
+- Dataset attribute names: [`truecropper-min-size-width`, `truecropper-min-size-height`, `truecropper-mni-size-unit`]
 
 _Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
 
@@ -108,6 +111,7 @@ The starting size of the crop region when it is **first** initialized.
 - Type: `[x, y, width, height, unit?]`
 - Default: `[0, 0, 100, 100, 'percent']` (A starting crop region as large as possible)
 - Example: `startSize: [0, 0, 50, 50, "real"]` (A starting crop region on 0x0:50x50)
+- Dataset attribute names: [`truecropper-start-size-x`, `truecropper-start-size-y`, `truecropper-start-size-width`, `truecropper-max-start-height`, `truecropper-start-size-unit`]
 
 _Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
 
@@ -118,8 +122,21 @@ The starting size of the crop region when it is **not first** initialized. Such 
 - Type: `[x, y, width, height, unit?]`
 - Default: `[0, 0, 100, 100, 'percent']` (A starting crop region as large as possible)
 - Example: `defaultSize: [50, 50]` (A starting crop region of 50% of the image size)
+- Dataset attribute names: [`truecropper-default-size-x`, `truecropper-default-size-y`, `truecropper-default-size-width`, `truecropper-max-default-height`, `truecropper-default-size-unit`]
 
 _Note: `unit` accepts a value of **'real'** or **'percent'** or **'relative'**. Defaults to **'real'**._
+
+#### **returnMode**
+
+Define how the crop region should be calculated.
+
+- Type: `String`
+- Default: `"real"`
+- Possible values: `"real"`, `"percent"` or `"relative"`
+  - `real` returns the crop region values based on the size of the image's actual sizes. This ensures that the crop region values are the same regardless if the TrueCropper element is scaled or not.
+  - `percent` returns the crop region values as a ratio. e.g. For example, an `x, y` position at the center will be `{x: 50, y: 50}`.
+  - `relative` returns the crop region values as is based on the size of the TrueCropper element.
+- Dataset attribute name: [`truecropper-return-mode`]
 
 #### **onCropStart**
 
@@ -134,6 +151,7 @@ onCropStart: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
+- Dataset attribute name: no implementation
 
 #### **onCropMove**
 
@@ -148,6 +166,7 @@ onCropMove: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
+- Dataset attribute name: no implementation
 
 #### **onCropEnd**
 
@@ -162,6 +181,7 @@ onCropEnd: function(instance, data) {
   console.log(data.x, data.y, data.width, data.height);
 }
 ```
+- Dataset attribute name: no implementation
 
 #### onInitialize
 
@@ -176,17 +196,7 @@ onInitialize: function(instance, data) {
   // do things here
 }
 ```
-
-#### **returnMode**
-
-Define how the crop region should be calculated.
-
-- Type: `String`
-- Default: `"real"`
-- Possible values: `"real"`, `"percent"` or `"relative"`
-  - `real` returns the crop region values based on the size of the image's actual sizes. This ensures that the crop region values are the same regardless if the TrueCropper element is scaled or not.
-  - `percent` returns the crop region values as a ratio. e.g. For example, an `x, y` position at the center will be `{x: 50, y: 50}`.
-  - `relative` returns the crop region values as is based on the size of the TrueCropper element.
+- Dataset attribute name: no implementation
 
 ## Methods
 
@@ -232,7 +242,7 @@ Return the image props in format: `{ real: { width, height }, relative: { width,
 
 #### getStatus()
 
-Get status of realcropper instance.
+Get status of truecropper instance.
 
 #### setValue({ x: number, y: number, width: number, height: number })
 

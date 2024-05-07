@@ -1,7 +1,7 @@
 var _ = Object.defineProperty;
 var P = (n, t, e) => t in n ? _(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
 var o = (n, t, e) => (P(n, typeof t != "symbol" ? t + "" : t, e), e);
-const g = "truecropper", u = {
+const g = "truecropper", c = {
   base: g,
   img: `${g}__image`,
   background: `${g}__background`,
@@ -87,7 +87,7 @@ const Z = (n) => {
   let e = t.parentElement;
   if (!e)
     throw new y("parentNotContainDiv");
-  return e.classList.contains(u.base) || (e = null), [t, e];
+  return e.classList.contains(c.base) || (e = null), [t, e];
 }, b = (n, t = void 0) => {
   const e = document.createElement("div");
   return e.className = n, t && t.appendChild(e), e;
@@ -550,14 +550,14 @@ class at {
 }
 const lt = ["real", "relative", "percent"];
 var z = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(z || {});
-const E = 1e-4, dt = "cropper";
+const E = 1e-4, dt = c.base;
 function ct(n) {
   return n.charAt(0).toUpperCase() + n.slice(1);
 }
 function v(n) {
   return n == null;
 }
-function c(n, t, e, i = !1) {
+function u(n, t, e, i = !1) {
   if (v(t))
     return e;
   if (typeof t != "number")
@@ -631,19 +631,19 @@ const ut = (n, t) => {
   };
 }, j = (n, t, e) => Math.abs(n - t) < e, gt = (n) => {
   var r;
-  const t = c("aspectRatio", n.aspectRatio, 0), e = {
-    width: c("minSizeWidth", n.minSize.width, 0),
-    height: c("minSizeHeight", n.minSize.height, 0),
+  const t = u("aspectRatio", n.aspectRatio, 0), e = {
+    width: u("minSizeWidth", n.minSize.width, 0),
+    height: u("minSizeHeight", n.minSize.height, 0),
     unit: M("minSizeUnit", (r = n.minSize) == null ? void 0 : r.unit, "real")
   }, i = {
-    width: c("maxSizeWidth", n.maxSize.width, 0),
-    height: c("maxSizeHeight", n.maxSize.height, 0),
+    width: u("maxSizeWidth", n.maxSize.width, 0),
+    height: u("maxSizeHeight", n.maxSize.height, 0),
     unit: M("maxSizeUnit", n.maxSize.unit, "real")
   }, s = {
-    x: c("startSizeX", n.startSize.x, 0, !0),
-    y: c("startSizeY", n.startSize.y, 0, !0),
-    width: c("startSizeWidth", n.startSize.width, 0),
-    height: c("startSizeHeight", n.startSize.height, 0),
+    x: u("startSizeX", n.startSize.x, 0, !0),
+    y: u("startSizeY", n.startSize.y, 0, !0),
+    width: u("startSizeWidth", n.startSize.width, 0),
+    height: u("startSizeHeight", n.startSize.height, 0),
     unit: M("startSizeUnit", n.startSize.unit, "real"),
     centeredX: v(n.startSize.x),
     centeredY: v(n.startSize.y),
@@ -651,10 +651,10 @@ const ut = (n, t) => {
   };
   s.allowChange = s.width === 0 && s.height === 0;
   const h = {
-    x: c("defaultSizeX", n.defaultSize.x, 0, !0),
-    y: c("defaultSizeY", n.defaultSize.y, 0, !0),
-    width: c("defaultSizeWidth", n.defaultSize.width, 0),
-    height: c("defaultSizeHeight", n.defaultSize.height, 0),
+    x: u("defaultSizeX", n.defaultSize.x, 0, !0),
+    y: u("defaultSizeY", n.defaultSize.y, 0, !0),
+    width: u("defaultSizeWidth", n.defaultSize.width, 0),
+    height: u("defaultSizeHeight", n.defaultSize.height, 0),
     unit: M("defaultSizeUnit", n.defaultSize.unit, "real"),
     centeredX: v(n.defaultSize.x),
     centeredY: v(n.defaultSize.y),
@@ -1020,27 +1020,27 @@ class zt {
   createDOM() {
     if (this.isDomCreated)
       return;
-    this.replaceDOM && (this.htmlContainer = document.createElement("div"), this.htmlContainer.classList.add(u.base), this.htmlImg.parentElement && this.htmlImg.parentElement.replaceChild(
+    this.replaceDOM && (this.htmlContainer = document.createElement("div"), this.htmlContainer.classList.add(c.base), this.htmlImg.parentElement && this.htmlImg.parentElement.replaceChild(
       this.htmlContainer,
       this.htmlImg
     ), this.htmlContainer.appendChild(this.htmlImg));
     const t = this.htmlContainer;
-    nt(t), this.htmlImg.classList.add(u.img), this.background = new ot(t, u.background), this.newSelection = new rt(
+    nt(t), this.htmlImg.classList.add(c.img), this.background = new ot(t, c.background), this.newSelection = new rt(
       t,
-      u.new,
+      c.new,
       this.eventBus,
       this.options.allowNewSelection
     ), this.selection = new at(
       t,
-      u.selection,
+      c.selection,
       this.eventBus,
       this.options.allowMove
     ), this.handles = new ft(
       t,
-      u.hanleds,
+      c.hanleds,
       this.eventBus,
       this.options.allowResize,
-      u.handle
+      c.handle
     ), this.isDomCreated = !0;
   }
   calcContainerProps() {
@@ -1078,7 +1078,7 @@ class zt {
     };
   }
   changeStatus(t) {
-    this.status = t, this.htmlImg && this.setDataset(u.valueStatus, t);
+    this.status = t, this.htmlImg && this.setDataset(c.valueStatus, t);
   }
   /**
    * Draw visuals (border, handles, etc) for the current box.
@@ -1204,7 +1204,7 @@ class zt {
   }
   setDatasetCropValues(t) {
     const e = t || this.getValue();
-    this.setDataset(u.valueX, e.x), this.setDataset(u.valueY, e.y), this.setDataset(u.valueWidth, e.width), this.setDataset(u.valueHeight, e.height);
+    this.setDataset(c.valueX, e.x), this.setDataset(c.valueY, e.y), this.setDataset(c.valueWidth, e.width), this.setDataset(c.valueHeight, e.height);
   }
 }
 export {
