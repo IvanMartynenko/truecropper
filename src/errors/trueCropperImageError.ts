@@ -1,8 +1,13 @@
-import { IimageErrorData } from "../types";
+import { CallbackErrorData, IimageErrorData } from "../types";
 
 export class TrueCropperImageError extends Error {
-  public data;
-  public constructor(message: string, data: IimageErrorData) {
+  public data: CallbackErrorData;
+  public messageId: number;
+  public constructor(
+    message: string,
+    data: IimageErrorData,
+    messageId: number,
+  ) {
     super(message);
 
     Object.setPrototypeOf(this, TrueCropperImageError.prototype);
@@ -10,11 +15,12 @@ export class TrueCropperImageError extends Error {
     this.name = "TrueCropperImageError";
     this.data = {
       target: data.target,
-      coordinates: data.coordinates ? { ...data.coordinates } : undefined,
+      targetCoordinates: data.coordinates ? { ...data.coordinates } : undefined,
       targetSize: { ...data.targetSize },
       source: data.source,
       sourceSize: { ...data.sourceSize },
     };
+    this.messageId = messageId;
   }
 
   public static startSize(
@@ -32,7 +38,7 @@ export class TrueCropperImageError extends Error {
       source,
       sourceSize,
     };
-    return new this(message, data);
+    return new this(message, data, 6);
   }
 
   public static size(
@@ -49,6 +55,6 @@ export class TrueCropperImageError extends Error {
       source,
       sourceSize,
     };
-    return new this(message, data);
+    return new this(message, data, 7);
   }
 }

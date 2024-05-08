@@ -1,18 +1,22 @@
+import { CallbackErrorData } from "types";
+
 const errorMessage = {
-  srcEmpty: "Image src not provided",
-  elementNotFound: "Unable to find element",
-  parentNotContainDiv: "Parent element can be exists",
+  elementNotFound: { text: "Unable to find element", id: 0 },
+  srcEmpty: { text: "Image src not provided", id: 1 },
+  parentNotContainDiv: { text: "Parent element can be exists", id: 2 },
 };
 
 export class TrueCropperHtmlError extends Error {
-  public data: null;
+  public data: CallbackErrorData;
+  public messageId: number;
   public constructor(key: keyof typeof errorMessage) {
     const message = errorMessage[key];
-    super(message);
+    super(message.text);
 
     Object.setPrototypeOf(this, TrueCropperHtmlError.prototype);
 
     this.name = "TrueCropperHtmlError";
-    this.data = null;
+    this.data = {};
+    this.messageId = message.id;
   }
 }

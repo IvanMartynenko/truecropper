@@ -15,29 +15,31 @@ const w = "truecropper", c = {
   valueHeight: `${w}Height`,
   valueStatus: `${w}Status`
 }, q = {
-  srcEmpty: "Image src not provided",
-  elementNotFound: "Unable to find element",
-  parentNotContainDiv: "Parent element can be exists"
+  elementNotFound: { text: "Unable to find element", id: 0 },
+  srcEmpty: { text: "Image src not provided", id: 1 },
+  parentNotContainDiv: { text: "Parent element can be exists", id: 2 }
 };
 class y extends Error {
   constructor(e) {
     const i = q[e];
-    super(i);
+    super(i.text);
     o(this, "data");
-    Object.setPrototypeOf(this, y.prototype), this.name = "TrueCropperHtmlError", this.data = null;
+    o(this, "messageId");
+    Object.setPrototypeOf(this, y.prototype), this.name = "TrueCropperHtmlError", this.data = {}, this.messageId = i.id;
   }
 }
-class x extends Error {
-  constructor(e, i) {
+class S extends Error {
+  constructor(e, i, s) {
     super(e);
     o(this, "data");
-    Object.setPrototypeOf(this, x.prototype), this.name = "TrueCropperImageError", this.data = {
+    o(this, "messageId");
+    Object.setPrototypeOf(this, S.prototype), this.name = "TrueCropperImageError", this.data = {
       target: i.target,
-      coordinates: i.coordinates ? { ...i.coordinates } : void 0,
+      targetCoordinates: i.coordinates ? { ...i.coordinates } : void 0,
       targetSize: { ...i.targetSize },
       source: i.source,
       sourceSize: { ...i.sourceSize }
-    };
+    }, this.messageId = s;
   }
   static startSize(e, i, s, h, r) {
     const a = `The ${e} (${i.x}x${i.y}:${s.width}x${s.height}) exceeds the ${h} (${r.width}x${r.height})`, l = {
@@ -47,7 +49,7 @@ class x extends Error {
       source: h,
       sourceSize: r
     };
-    return new this(a, l);
+    return new this(a, l, 6);
   }
   static size(e, i, s, h) {
     const r = `The ${e} (${i.width}x${i.height}) exceeds the ${s} (${h.width}x${h.height})`, a = {
@@ -57,22 +59,23 @@ class x extends Error {
       source: s,
       sourceSize: h
     };
-    return new this(r, a);
+    return new this(r, a, 7);
   }
 }
 class g extends Error {
-  constructor(e) {
+  constructor(e, i, s = 0) {
     super(e);
     o(this, "data");
-    Object.setPrototypeOf(this, g.prototype), this.name = "TrueCropperOptionsError", this.data = null;
+    o(this, "messageId");
+    Object.setPrototypeOf(this, g.prototype), this.name = "TrueCropperOptionsError", this.data = i, this.messageId = s;
   }
   static aspectRatio(e, i, s, h) {
     const r = `The specified aspect ratio (${s}) and calculated ${e} dimensions (width/height = ${i}) are greater than (${h}). This might be due to a rounding error on the server side or incorrect minimum sizes.`;
-    return new this(r);
+    return new this(r, { name: e }, 5);
   }
   static new(e, i, s = !0) {
-    const h = s ? `${e} must be of type ${i}` : `${e} must not be ${i}`;
-    return new this(h);
+    const h = s ? 3 : 4, r = s ? `${e} must be ${i}` : `${e} must not be ${i}`;
+    return new this(r, { name: e, object: i }, h);
   }
 }
 const Z = (n) => {
@@ -127,12 +130,12 @@ const Z = (n) => {
   };
   return { coordinates: l, size: d, minSize: r, maxSize: a };
 }, K = (n, t, e, i, s) => {
-  const h = I(
+  const h = k(
     n.minSize,
     { width: 1, height: 1 },
     e
   );
-  let r = I(n.maxSize, t, e), a = I(n.size, t, e);
+  let r = k(n.maxSize, t, e), a = k(n.size, t, e);
   r = et(r, t, e);
   let l = n.coordinates;
   if (i) {
@@ -158,10 +161,10 @@ const Z = (n) => {
 }) => {
   const h = (r, a, l, d) => {
     if (r.width > a.width || r.height > a.height)
-      throw x.size(l, r, d, a);
+      throw S.size(l, r, d, a);
   };
   if (h(t, s, "minSize", "imageSize"), h(t, e, "minSize", "maxSize"), h(t, i, "minSize", "startSize"), n.x + i.width > s.width || n.y + i.height > s.height)
-    throw x.startSize(
+    throw S.startSize(
       "startSize",
       n,
       i,
@@ -179,7 +182,7 @@ const Z = (n) => {
 }, U = (n, t, e) => {
   const i = n * t;
   return { width: i, height: i / e };
-}, j = (n, t, e) => {
+}, F = (n, t, e) => {
   const i = n * t;
   return { width: i * e, height: i };
 }, tt = (n, t, e) => {
@@ -191,12 +194,12 @@ const Z = (n) => {
     t.width - n.coordinates.x,
     h,
     e
-  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = j(
+  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = F(
     t.height - n.coordinates.y,
     r,
     e
-  )), n.coordinates.x - i.width * n.points.x < 0 && (i = U(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = j(n.coordinates.y, r, e)), i;
-}, I = (n, t, e) => {
+  )), n.coordinates.x - i.width * n.points.x < 0 && (i = U(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = F(n.coordinates.y, r, e)), i;
+}, k = (n, t, e) => {
   const i = { ...n };
   return e && !i.width && !i.height && (e > 1 ? i.height = t.height : i.width = t.width), i.width || (i.width = e ? i.height * e : t.width), i.height || (i.height = e ? i.width / e : t.height), i;
 }, et = (n, t, e) => {
@@ -550,7 +553,7 @@ class at {
 }
 const lt = ["real", "relative", "percent"];
 var z = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(z || {});
-const S = 1e-4, dt = c.base;
+const x = 1e-4, dt = c.base;
 function ct(n) {
   return n.charAt(0).toUpperCase() + n.slice(1);
 }
@@ -568,7 +571,7 @@ function u(n, t, e, i = !1) {
     throw g.new(n, "positive");
   return t;
 }
-function k(n, t, e) {
+function I(n, t, e) {
   if (v(t))
     return e;
   if (typeof t != "boolean")
@@ -587,8 +590,8 @@ const ut = (n, t) => {
   const e = t || {};
   if (typeof e != "object" || e === null)
     throw g.new("options", "object");
-  const i = (F, V) => {
-    const C = n[`${dt}${ct(F)}`];
+  const i = (j, V) => {
+    const C = n[`${dt}${ct(j)}`];
     if (!C)
       return V;
     const M = C.toLowerCase();
@@ -663,45 +666,45 @@ const ut = (n, t) => {
   if (h.allowChange = h.width === 0 && h.height === 0, t) {
     if (e.width && e.height) {
       const a = e.width / e.height;
-      if (!B(a, t, S))
+      if (!B(a, t, x))
         throw g.aspectRatio(
           "minimum",
           a,
           t,
-          S
+          x
         );
     }
     if (s.width && s.height) {
       const a = s.width / s.height;
-      if (!B(a, t, S))
+      if (!B(a, t, x))
         throw g.aspectRatio(
           "startSize",
           a,
           t,
-          S
+          x
         );
     }
     if (h.width && h.height) {
       const a = h.width / h.height;
-      if (!B(a, t, S))
+      if (!B(a, t, x))
         throw g.aspectRatio(
           "defaultSize",
           a,
           t,
-          S
+          x
         );
     }
   }
   return {
     aspectRatio: t,
-    allowFlip: k("allowFlip", n.allowFlip, !0),
-    allowNewSelection: k(
+    allowFlip: I("allowFlip", n.allowFlip, !0),
+    allowNewSelection: I(
       "allowNewSelection",
       n.allowNewSelection,
       !0
     ),
-    allowMove: k("allowMove", n.allowMove, !0),
-    allowResize: k("allowResize", n.allowResize, !0),
+    allowMove: I("allowMove", n.allowMove, !0),
+    allowResize: I("allowResize", n.allowResize, !0),
     returnMode: b("returnMode", n.returnMode, "real"),
     minSize: e,
     maxSize: i,
@@ -880,7 +883,7 @@ class zt {
     try {
       this.firstInit = !1, this.destroy(), this.initializeCropper();
     } catch (t) {
-      if (t instanceof y || t instanceof g || t instanceof x)
+      if (t instanceof y || t instanceof g || t instanceof S)
         this.onErrorCallback(t);
       else
         throw t;
@@ -987,8 +990,9 @@ class zt {
   onErrorCallback(t) {
     this.changeStatus(z.error);
     const e = {
-      type: t.name,
+      name: t.name,
       message: t.message,
+      messageId: t.messageId,
       data: t.data
     };
     if (this.destroy(), this.callbacks.onError)
@@ -1023,7 +1027,7 @@ class zt {
     try {
       this.createDOM(), this.calcContainerProps(), this.updateRelativeSize(), this.createNewBox(), this.onInitializeCallback(), this.observer.observe(this.htmlImg), this.changeStatus(z.ready), this.onCropEndCallback();
     } catch (t) {
-      if (t instanceof x)
+      if (t instanceof S)
         this.onErrorCallback(t);
       else
         throw t;

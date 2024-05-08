@@ -345,8 +345,9 @@ export default class TrueCropper {
     // Change dataset properties status to error
     this.changeStatus(Status.error);
     const value = {
-      type: error.name,
+      name: error.name,
       message: error.message,
+      messageId: error.messageId,
       data: error.data,
     };
     // Destroy instance

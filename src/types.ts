@@ -32,16 +32,22 @@ export interface StartSize extends Coordinates, Size, UnitProps {
 
 export type CallbackType<T, K> = (klass: T, values: K) => void;
 export type CallbackOnCrop = CallbackType<TrueCropperCore, BoxProps>;
-export interface ImageError {
-  target: string;
-  source: string;
-  targetSize: Size;
-  sourceSize: Size;
+
+export interface CallbackErrorData {
+  target?: string;
+  targetSize?: Size;
+  targetCoordinates?: Coordinates;
+  source?: string;
+  sourceSize?: Size;
+  name?: string;
+  object?: string;
 }
+
 export interface CallbackError {
-  type: string;
+  name: string;
   message: string;
-  data: null | ImageError;
+  messageId: number;
+  data: CallbackErrorData;
 }
 export type CallbackOnError = CallbackType<TrueCropperCore, CallbackError>;
 

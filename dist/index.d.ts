@@ -6,9 +6,30 @@ declare interface BoxProps extends Coordinates, Size {
 }
 
 declare interface CallbackError {
-    type: string;
+    name: string;
     message: string;
-    data: null | ImageError;
+    messageId: number;
+    data: CallbackErrorData;
+}
+
+declare interface CallbackErrorData {
+    target?: string;
+    targetSize?: Size;
+    targetCoordinates?: Coordinates;
+    source?: string;
+    sourceSize?: Size;
+    name?: string;
+    object?: string;
+}
+
+declare interface CallbackErrorData_2 {
+    target?: string;
+    targetSize?: Size_2;
+    targetCoordinates?: Coordinates_2;
+    source?: string;
+    sourceSize?: Size_2;
+    name?: string;
+    object?: string;
 }
 
 declare type CallbackOnCrop = CallbackType<TrueCropper, BoxProps>;
@@ -22,6 +43,11 @@ declare interface Coordinates {
     y: number;
 }
 
+declare interface Coordinates_2 {
+    x: number;
+    y: number;
+}
+
 declare interface CreateNewBoxTypeEvent {
     coordinates: Coordinates;
     size: Size;
@@ -30,9 +56,18 @@ declare interface CreateNewBoxTypeEvent {
 }
 
 declare const errorMessage: {
-    srcEmpty: string;
-    elementNotFound: string;
-    parentNotContainDiv: string;
+    elementNotFound: {
+        text: string;
+        id: number;
+    };
+    srcEmpty: {
+        text: string;
+        id: number;
+    };
+    parentNotContainDiv: {
+        text: string;
+        id: number;
+    };
 };
 
 declare interface IimageErrorData {
@@ -40,13 +75,6 @@ declare interface IimageErrorData {
     coordinates?: Coordinates;
     targetSize: Size;
     source: string;
-    sourceSize: Size;
-}
-
-declare interface ImageError {
-    target: string;
-    source: string;
-    targetSize: Size;
     sourceSize: Size;
 }
 
@@ -74,6 +102,11 @@ declare interface Points {
 }
 
 declare interface Size {
+    width: number;
+    height: number;
+}
+
+declare interface Size_2 {
     width: number;
     height: number;
 }
@@ -299,28 +332,15 @@ declare class TrueCropper {
     }
 
     declare class TrueCropperHtmlError extends Error {
-        data: null;
+        data: CallbackErrorData_2;
+        messageId: number;
         constructor(key: keyof typeof errorMessage);
     }
 
     declare class TrueCropperImageError extends Error {
-        data: {
-            target: string;
-            coordinates: {
-                x: number;
-                y: number;
-            } | undefined;
-            targetSize: {
-                width: number;
-                height: number;
-            };
-            source: string;
-            sourceSize: {
-                width: number;
-                height: number;
-            };
-        };
-        constructor(message: string, data: IimageErrorData);
+        data: CallbackErrorData;
+        messageId: number;
+        constructor(message: string, data: IimageErrorData, messageId: number);
         static startSize(target: string, coordinates: {
             x: number;
             y: number;
@@ -341,8 +361,9 @@ declare class TrueCropper {
     }
 
     declare class TrueCropperOptionsError extends Error {
-        data: null;
-        constructor(message: string);
+        data: CallbackErrorData_2;
+        messageId: number;
+        constructor(message: string, data: CallbackErrorData_2, messageId?: number);
         static aspectRatio(name: string, calculatedAspectRatio: number, aspectRatio: number, epsilon: number): TrueCropperOptionsError;
         static new(name: string, object: string, positive?: boolean): TrueCropperOptionsError;
     }
