@@ -77,7 +77,6 @@ describe("TrueCropper", () => {
 
   describe("Constructor", () => {
     it("should initialize without throwing", () => {
-      console.log(mockImageElement.width, mockImageElement.naturalWidth);
       expect(() => new TrueCropper(mockImageElement)).not.toThrow();
     });
 
@@ -122,6 +121,118 @@ describe("TrueCropper", () => {
       const src = "http://localhost/mockImageElement.png";
       croppr.setImage(src);
       expect(mockImageElement.src).toBe(src);
+    });
+  });
+
+  describe("moveTo", () => {
+    let croppr: TrueCropper;
+
+    beforeEach(() => {
+      croppr = new TrueCropper(mockImageElement);
+    });
+
+    it("should moveTo", () => {
+      croppr.resizeTo({ width: 100, height: 100 });
+      croppr.moveTo({ x: 10, y: 10 });
+      const data = croppr.getValue();
+      expect(data).toEqual({
+        x: 10,
+        y: 10,
+        width: 100,
+        height: 100,
+      });
+    });
+  });
+
+  describe("resizeTo", () => {
+    let croppr: TrueCropper;
+
+    beforeEach(() => {
+      croppr = new TrueCropper(mockImageElement);
+    });
+
+    it("should resizeTo", () => {
+      croppr.resizeTo({ width: 100, height: 100 }, { x: 0, y: 0 });
+      const data = croppr.getValue();
+      expect(data).toEqual({
+        x: 0,
+        y: 0,
+        width: 100,
+        height: 100,
+      });
+    });
+  });
+
+  describe("scaleBy", () => {
+    let croppr: TrueCropper;
+
+    beforeEach(() => {
+      croppr = new TrueCropper(mockImageElement);
+    });
+
+    it("should scaleBy", () => {
+      croppr.scaleBy(0.5, { x: 0, y: 0 });
+      const data = croppr.getValue();
+      expect(data).toEqual({
+        x: 0,
+        y: 0,
+        width: 256,
+        height: 256,
+      });
+    });
+  });
+
+  describe("getValue", () => {
+    let croppr: TrueCropper;
+
+    beforeEach(() => {
+      croppr = new TrueCropper(mockImageElement);
+    });
+
+    it("should getValue", () => {
+      croppr.setValue({ x: 10, y: 10, width: 50, height: 50 });
+      const data = croppr.getValue();
+      expect(data).toEqual({
+        x: 10,
+        y: 10,
+        width: 50,
+        height: 50,
+      });
+    });
+  });
+
+  describe("getImageProps", () => {
+    let croppr: TrueCropper;
+
+    beforeEach(() => {
+      croppr = new TrueCropper(mockImageElement);
+    });
+
+    it("should getImageProps", () => {
+      const data = croppr.getImageProps();
+      expect(data).toEqual({
+        real: {
+          width: 512,
+          height: 512,
+        },
+        relative: {
+          width: 512,
+          height: 512,
+        },
+      });
+    });
+  });
+
+  describe("getStatus", () => {
+    let croppr: TrueCropper;
+
+    beforeEach(() => {
+      croppr = new TrueCropper(mockImageElement);
+    });
+
+    it("should getStatus", () => {
+      const data = croppr.getStatus();
+      expect(data).toBe("ready");
     });
   });
 
