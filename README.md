@@ -325,23 +325,42 @@ When an image is initialized or reloaded, this cropper checks the initialization
 
 List of possible errors:
 
-type: TrueCropperHtmlError
+- type: TrueCropperHtmlError
+- message: Unable to find element
+- data: null
+- description: DOM element specified in selector not found
 
-| message: string                                                                                                                                                                                                                                                     | data: null \| Object                                                                                                                                                            | description                                                                                                                                                      |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Unable to find element                                                                                                                                                                                                                                              | null                                                                                                                                                                            | DOM element specified in selector not found                                                                                                                      |
-| Image src not provided                                                                                                                                                                                                                                              | null                                                                                                                                                                            | The DOM element is not an image element                                                                                                                          |
-| Parent element can be exists                                                                                                                                                                                                                                        | null                                                                                                                                                                            | A DOM element has no parent DOM element. Most likely you won't see this error at all because the element will at least be in the body tag                        |
+- type: TrueCropperHtmlError
+- message: Image src not provided
+- data: null
+- description: The DOM element is not an image element
 
-type: TrueCropperOptionsError
-| message: string                                                                                                                                                                                                                                                     | data: null \| Object                                                                                                                                                            | description                                                                                                                                                      |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| ${option} must be of type ${optionType}                                                                                                                                                                                                                             | null                                                                                                                                                                            | The type of configuration parameters or data set does not match the required data type                                                                           |
-| ${option} must not be ${optionType}                                                                                                                                                                                                                                 | null                                                                                                                                                                            | The type from the configuration parameters or data set must not have the specified value. For example, passing NaN instead of one of the possible numeric values |
-| The specified aspect ratio (${aspectRatio}) and calculated ${minimum/StartSize/DefaultSize} dimensions (width/height = ${calculatedAspectRatio}) are greater than (${epsilon}). This might be due to a rounding error on the server side or incorrect minimum sizes | null                                                                                                                                                                            | Checking for possible floating point rounding errors in aspect rati                                                                                              |
+- type: TrueCropperHtmlError
+- message: Parent element can be exists
+- data: null
+- description: A DOM element has no parent DOM element. Most likely you won't see this error at all because the element will at least be in the body tag
 
-type: TrueCropperImageError
-| message: string                                                                                                                                                                                                                                                     | data: null \| Object                                                                                                                                                            | description                                                                                                                                                      |
-|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| The startSize (${x}x${y}:${width}x${height}) exceeds the imageSize (${imageSize.width}x${imageSize.height})                                                                                                                                                         | { target: "startSize", coordinates: {x:number, y:number}, targetSize: {width:number, height: number}, source: "imageSize", sourceSize: {width: number, height: number} }        | The stating or default crop settings are not suitable for the current image. Checked when loading or reloading an image                                          |
-| The minSize (${x}x${y}:${width}x${height}) exceeds the ${source} (${source.width}x${source.height})                                                                                                                                                                 | { target: "minSize", coordinates: undefined, targetSize: {width:number, height: number}, source: "imageSize\|maxSize\|startSize", sourceSize: {width: number, height: number} } | We check that imageSize\|maxSize\|startSize is greater than minSize. Checked when loading or reloading an image                                                  |
+- type: TrueCropperOptionsError
+- message: ${option} must be of type ${optionType}
+- data: null
+- description: The type of configuration parameters or data set does not match the required data type
+
+- type: TrueCropperOptionsError
+- message: ${option} must not be ${optionType}
+- data: null
+- description: The type from the configuration parameters or data set must not have the specified value. For example, passing NaN instead of one of the possible numeric values
+
+- type: TrueCropperOptionsError
+- message: The specified aspect ratio (${aspectRatio}) and calculated ${minimum/StartSize/DefaultSize} dimensions (width/height = ${calculatedAspectRatio}) are greater than (${epsilon}). This might be due to a rounding error on the server side or incorrect minimum sizes
+- data: null
+- description: Checking for possible floating point rounding errors in aspect ratio
+
+- type: TrueCropperImageError
+- message: The startSize (${x}x${y}:${width}x${height}) exceeds the imageSize (${imageSize.width}x${imageSize.height})
+- data: { target: "startSize", coordinates: { x, y }, targetSize: { width, height }, source: "imageSize", sourceSize: { width, height } }
+- description: The stating or default crop settings are not suitable for the current image. Checked when loading or reloading an image
+
+- type: TrueCropperImageError
+- message: The minSize (${x}x${y}:${width}x${height}) exceeds the ${source} (${source.width}x${source.height})
+- data: { target: "minSize", coordinates: undefined, targetSize: { width, height }, source: "imageSize|maxSize|startSize", sourceSize: { width, height } }
+- description: We check that imageSize|maxSize|startSize is greater than minSize. Checked when loading or reloading an image
