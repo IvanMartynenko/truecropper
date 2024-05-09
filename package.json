@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A vanilla JavaScript image cropper that's lightweight, awesome, and has absolutely zero dependencies.",
   "author": "Ivan Martynenko <sieger1x2@gmail.com>",
-  "homepage": "https://github.com/jasonsturges/vite-typescript-npm-package",
-  "repository": "github:jasonsturges/vite-typescript-npm-package",
+  "homepage": "https://github.com/IvanMartynenko/truecropper",
+  "repository": "github:IvanMartynenko/truecropper.git",
   "license": "MIT",
   "keywords": [
     "image",
@@ -19,8 +19,8 @@
     "croppr",
     "truecropper"
   ],
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.es.js",
+  "main": "dist/truecropper.js",
+  "module": "dist/truecropper.es.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "files": [
