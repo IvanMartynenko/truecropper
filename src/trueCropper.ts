@@ -74,6 +74,7 @@ export default class TrueCropper {
   public status = Status.waiting;
   public eventBus = this.event.bind(this);
   private observer!: ResizeObserver;
+  private preventDoubleLoad?: string;
 
   private callbacks: Icallback = {
     onInitialize: undefined,
@@ -384,11 +385,20 @@ export default class TrueCropper {
   private initializeCropper() {
     this.initializeObserver();
     // Wait until image is loaded before proceeding
-    if (this.htmlImg.width !== 0 && this.htmlImg.height !== 0) {
+    if (
+      this.htmlImg.src &&
+      this.htmlImg.width !== 0 &&
+      this.htmlImg.height !== 0
+    ) {
+      this.preventDoubleLoad = this.htmlImg.src;
       this.initialize();
     }
-
     this.htmlImg.onload = () => {
+      if (!this.htmlImg.src || this.preventDoubleLoad === this.htmlImg.src) {
+        return;
+      } else {
+        this.preventDoubleLoad = undefined;
+      }
       this.changeStatus(
         this.status === Status.waiting ? Status.waiting : Status.reloading,
       );

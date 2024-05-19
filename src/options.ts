@@ -137,9 +137,12 @@ export const parseOptions = (
     }
 
     // If the value can be parsed as a number, return it as a number
-    const numberValue = Number.parseFloat(value);
-    if (numberValue.toString() === value) {
-      return numberValue;
+    // const numberValue = Number.parseFloat(value);
+    // if (numberValue.toString() === value) {
+    //   return numberValue;
+    // }
+    if (value.trim().length !== 0 && !Number.isNaN(Number(value))) {
+      return Number(value);
     }
 
     // If the value is "true" (case-insensitive), return true
@@ -255,28 +258,28 @@ export const prepareOptions = (options: ReturnType<typeof parseOptions>) => {
         );
       }
     }
-    if (firstInitSize.width && firstInitSize.height) {
-      const calculatedAspectRatio = firstInitSize.width / firstInitSize.height;
-      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
-        throw TrueCropperOptionsError.aspectRatio(
-          "startSize",
-          calculatedAspectRatio,
-          aspectRatio,
-          EPSILON,
-        );
-      }
-    }
-    if (startSize.width && startSize.height) {
-      const calculatedAspectRatio = startSize.width / startSize.height;
-      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
-        throw TrueCropperOptionsError.aspectRatio(
-          "defaultSize",
-          calculatedAspectRatio,
-          aspectRatio,
-          EPSILON,
-        );
-      }
-    }
+    // if (firstInitSize.width && firstInitSize.height) {
+    //   const calculatedAspectRatio = firstInitSize.width / firstInitSize.height;
+    //   if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
+    //     throw TrueCropperOptionsError.aspectRatio(
+    //       "startSize",
+    //       calculatedAspectRatio,
+    //       aspectRatio,
+    //       EPSILON,
+    //     );
+    //   }
+    // }
+    // if (startSize.width && startSize.height) {
+    //   const calculatedAspectRatio = startSize.width / startSize.height;
+    //   if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
+    //     throw TrueCropperOptionsError.aspectRatio(
+    //       "defaultSize",
+    //       calculatedAspectRatio,
+    //       aspectRatio,
+    //       EPSILON,
+    //     );
+    //   }
+    // }
   }
 
   return {

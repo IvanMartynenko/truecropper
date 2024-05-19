@@ -1,27 +1,27 @@
-var _ = Object.defineProperty;
-var P = (n, t, e) => t in n ? _(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
-var o = (n, t, e) => (P(n, typeof t != "symbol" ? t + "" : t, e), e);
-const w = "truecropper", c = {
-  base: w,
-  img: `${w}__image`,
-  background: `${w}__background`,
-  new: `${w}__new-selection`,
-  selection: `${w}__selection`,
-  handle: `${w}__handle`,
-  hanleds: `${w}__handles`,
-  valueX: `${w}X`,
-  valueY: `${w}Y`,
-  valueWidth: `${w}Width`,
-  valueHeight: `${w}Height`,
-  valueStatus: `${w}Status`
-}, q = {
+var j = Object.defineProperty;
+var F = (n, t, e) => t in n ? j(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
+var o = (n, t, e) => (F(n, typeof t != "symbol" ? t + "" : t, e), e);
+const g = "truecropper", c = {
+  base: g,
+  img: `${g}__image`,
+  background: `${g}__background`,
+  new: `${g}__new-selection`,
+  selection: `${g}__selection`,
+  handle: `${g}__handle`,
+  hanleds: `${g}__handles`,
+  valueX: `${g}X`,
+  valueY: `${g}Y`,
+  valueWidth: `${g}Width`,
+  valueHeight: `${g}Height`,
+  valueStatus: `${g}Status`
+}, _ = {
   elementNotFound: { text: "Unable to find element", id: 0 },
   srcEmpty: { text: "Image src not provided", id: 1 },
   parentNotContainDiv: { text: "Parent element can be exists", id: 2 }
 };
 class y extends Error {
   constructor(e) {
-    const i = q[e];
+    const i = _[e];
     super(i.text);
     o(this, "data");
     o(this, "messageId");
@@ -62,12 +62,12 @@ class S extends Error {
     return new this(r, a, 7);
   }
 }
-class g extends Error {
+class w extends Error {
   constructor(e, i, s = 0) {
     super(e);
     o(this, "data");
     o(this, "messageId");
-    Object.setPrototypeOf(this, g.prototype), this.name = "TrueCropperOptionsError", this.data = i, this.messageId = s;
+    Object.setPrototypeOf(this, w.prototype), this.name = "TrueCropperOptionsError", this.data = i, this.messageId = s;
   }
   static aspectRatio(e, i, s, h) {
     const r = `The specified aspect ratio (${s}) and calculated ${e} dimensions (width/height = ${i}) are greater than (${h}). This might be due to a rounding error on the server side or incorrect minimum sizes.`;
@@ -78,7 +78,7 @@ class g extends Error {
     return new this(r, { name: e, object: i }, h);
   }
 }
-const Z = (n) => {
+const P = (n) => {
   let t = null;
   if (typeof n == "string") {
     if (t = document.querySelector(n), t === null)
@@ -91,10 +91,10 @@ const Z = (n) => {
   if (!e)
     throw new y("parentNotContainDiv");
   return e.classList.contains(c.base) || (e = null), [t, e];
-}, E = (n, t = void 0) => {
+}, b = (n, t = void 0) => {
   const e = document.createElement("div");
   return e.className = n, t && t.appendChild(e), e;
-}, W = (n, t) => {
+}, O = (n, t) => {
   if (t.savedCoordinate < 0)
     return { flipped: !1, coordinate: null, size: null, point: 0.5 };
   const e = n < t.savedCoordinate, i = t.left !== e, s = t.savedCoordinate, h = Math.abs(t.savedCoordinate - n), r = Number(e);
@@ -104,8 +104,8 @@ const Z = (n) => {
     size: h,
     point: r
   };
-}, G = (n, t, e) => {
-  const i = W(n.x, t), s = W(n.y, e);
+}, q = (n, t, e) => {
+  const i = O(n.x, t), s = O(n.y, e);
   return {
     flipped: { x: i.flipped, y: s.flipped },
     newBox: {
@@ -114,7 +114,7 @@ const Z = (n) => {
       points: { x: i.point, y: s.point }
     }
   };
-}, J = (n, t, e, i, s) => {
+}, Z = (n, t, e, i, s) => {
   const h = (m, f, p) => p === "relative" ? m * s[f] : p === "percent" ? m >= 1 ? i[f] * (m / 100) : i[f] * m : m, r = {
     width: h(t.width, "width", t.unit),
     height: h(t.height, "height", t.unit)
@@ -129,17 +129,17 @@ const Z = (n) => {
     height: h(n.height, "height", n.unit)
   };
   return { coordinates: l, size: d, minSize: r, maxSize: a };
-}, K = (n, t, e, i, s) => {
-  const h = k(
+}, G = (n, t, e, i, s) => {
+  const h = I(
     n.minSize,
     { width: 1, height: 1 },
     e
   );
-  let r = k(n.maxSize, t, e), a = k(n.size, t, e);
-  r = et(r, t, e);
+  let r = I(n.maxSize, t, e), a = I(n.size, t, e);
+  r = Q(r, t, e);
   let l = n.coordinates;
   if (i) {
-    const d = it(
+    const d = tt(
       l,
       a,
       h,
@@ -152,7 +152,7 @@ const Z = (n) => {
     l = d.coordinates, a = d.size;
   }
   return { coordinates: l, size: a, minSize: h, maxSize: r, imgProps: t, aspectRatio: e };
-}, Q = ({
+}, J = ({
   coordinates: n,
   minSize: t,
   maxSize: e,
@@ -171,7 +171,7 @@ const Z = (n) => {
       "imageSize",
       s
     );
-}, D = ({
+}, N = ({
   size: n,
   minSize: t,
   maxSize: e,
@@ -179,38 +179,38 @@ const Z = (n) => {
 }) => {
   const s = { ...n };
   return e && (s.width > e.width && (s.width = e.width, s.height = i ? e.width / i : s.height), s.height > e.height && (s.width = i ? e.height * i : s.width, s.height = e.height)), t && (s.width < t.width && (s.width = t.width, s.height = i ? t.width / i : s.height), s.height < t.height && (s.width = i ? t.height * i : s.width, s.height = t.height)), s;
-}, U = (n, t, e) => {
+}, V = (n, t, e) => {
   const i = n * t;
   return { width: i, height: i / e };
-}, F = (n, t, e) => {
+}, R = (n, t, e) => {
   const i = n * t;
   return { width: i * e, height: i };
-}, tt = (n, t, e) => {
+}, K = (n, t, e) => {
   let i = { ...n.size };
   if (e === 0)
     return i;
   const s = n.isMultuAxis ? i.height * e >= i.width : n.isVerticalMovement, h = n.points.x === 1 || n.points.x === 0 ? 1 : 2, r = n.points.y === 1 || n.points.y === 0 ? 1 : 2;
-  return s ? i = { width: i.height * e, height: i.height } : i = { width: i.width, height: i.width / e }, n.coordinates.x + i.width * (1 - n.points.x) > t.width && (i = U(
+  return s ? i = { width: i.height * e, height: i.height } : i = { width: i.width, height: i.width / e }, n.coordinates.x + i.width * (1 - n.points.x) > t.width && (i = V(
     t.width - n.coordinates.x,
     h,
     e
-  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = F(
+  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = R(
     t.height - n.coordinates.y,
     r,
     e
-  )), n.coordinates.x - i.width * n.points.x < 0 && (i = U(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = F(n.coordinates.y, r, e)), i;
-}, k = (n, t, e) => {
+  )), n.coordinates.x - i.width * n.points.x < 0 && (i = V(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = R(n.coordinates.y, r, e)), i;
+}, I = (n, t, e) => {
   const i = { ...n };
   return e && !i.width && !i.height && (e > 1 ? i.height = t.height : i.width = t.width), i.width || (i.width = e ? i.height * e : t.width), i.height || (i.height = e ? i.width / e : t.height), i;
-}, et = (n, t, e) => {
+}, Q = (n, t, e) => {
   let i = { ...n };
-  return e && (i.width > i.height * e ? i.width = i.height * e : i.height = i.width / e), i = D({
+  return e && (i.width > i.height * e ? i.width = i.height * e : i.height = i.width / e), i = N({
     size: i,
     maxSize: t,
     aspectRatio: e
   }), i;
-}, it = (n, t, e, i, s, h, r, a) => {
-  const l = { ...t }, d = { ...n }, m = Math.min(i.width, s.width - n.x), f = Math.min(i.height, s.height - n.y), p = D({
+}, tt = (n, t, e, i, s, h, r, a) => {
+  const l = { ...t }, d = { ...n }, m = Math.min(i.width, s.width - n.x), f = Math.min(i.height, s.height - n.y), p = N({
     size: l,
     maxSize: { width: m, height: f },
     minSize: e,
@@ -218,7 +218,7 @@ const Z = (n) => {
   });
   return l.width = p.width, l.height = p.height, d.x = r ? (s.width - l.width) / 2 : n.x, d.y = a ? (s.height - l.height) / 2 : n.y, { coordinates: d, size: l };
 };
-class st {
+class et {
   /**
    * Creates a new Box instance.
    * @constructor
@@ -385,8 +385,8 @@ class st {
    * @returns {Size} The adjusted size within the constraints of aspect ratio, min size, and max size.
    */
   adjustAndCalculateSize(t) {
-    const e = tt(t, this.imgSize, this.aspectRatio);
-    return D({
+    const e = K(t, this.imgSize, this.aspectRatio);
+    return N({
       size: e,
       minSize: this.minSize,
       maxSize: this.maxSize,
@@ -407,14 +407,14 @@ class st {
     };
   }
 }
-function nt(n) {
-  n.addEventListener("touchstart", $), n.addEventListener("touchend", $), n.addEventListener("touchmove", $);
+function it(n) {
+  n.addEventListener("touchstart", k), n.addEventListener("touchend", k), n.addEventListener("touchmove", k);
 }
-function $(n) {
+function k(n) {
   n.preventDefault();
   const t = n, e = t.changedTouches[0];
   e.target.dispatchEvent(
-    new MouseEvent(ht(t.type), {
+    new MouseEvent(st(t.type), {
       bubbles: !0,
       cancelable: !0,
       view: window,
@@ -425,7 +425,7 @@ function $(n) {
     })
   );
 }
-function ht(n) {
+function st(n) {
   switch (n) {
     case "touchstart":
       return "mousedown";
@@ -435,11 +435,11 @@ function ht(n) {
       return "mouseup";
   }
 }
-class ot {
+class nt {
   constructor(t, e) {
     o(this, "nested", []);
     for (let i = 0; i < 4; i++) {
-      const s = E(`${e}-${i}`, t);
+      const s = b(`${e}-${i}`, t);
       this.nested.push(s);
     }
   }
@@ -457,10 +457,10 @@ class ot {
   }
   transform(t) {
     const e = t.x + t.width, i = t.y + t.height;
-    this.nested[0].style.height = `${t.y}px`, this.nested[0].style.left = `${t.x}px`, this.nested[0].style.width = `${t.width}px`, this.nested[1].style.left = `${e}px`, this.nested[2].style.left = `${t.x}px`, this.nested[2].style.width = `${t.width}px`, this.nested[2].style.top = `${i}px`, this.nested[3].style.width = `${t.x}px`;
+    this.nested[0].style.height = `${t.y}px`, this.nested[0].style.left = `${t.x}px`, this.nested[0].style.right = `calc(100% - ${t.width}px - ${t.x}px)`, this.nested[1].style.left = `${e}px`, this.nested[2].style.left = `${t.x}px`, this.nested[2].style.right = `calc(100% - ${t.width}px - ${t.x}px)`, this.nested[2].style.top = `${i}px`, this.nested[3].style.width = `${t.x}px`;
   }
 }
-class rt {
+class ht {
   /**
    * Creates a new NewSelection instance.
    * @constructor
@@ -471,7 +471,7 @@ class rt {
     o(this, "startMouse", { mouseX: 0, mouseY: 0 });
     o(this, "newBoxCreated", !1);
     o(this, "listener");
-    this.eventBus = i, this.el = E(e, t), s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener), this.mouseEvent()) : this.hide();
+    this.eventBus = i, this.el = b(e, t), s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener), this.mouseEvent()) : this.hide();
   }
   hide() {
     this.el.style.display = "none";
@@ -508,13 +508,13 @@ class rt {
     this.newBoxCreated = this.eventBus({ type: "createnewbox", data: d });
   }
 }
-class at {
+class ot {
   constructor(t, e, i, s) {
     o(this, "eventBus");
     o(this, "el");
     o(this, "enable");
     o(this, "listener");
-    this.eventBus = i, this.el = E(e, t), this.enable = s, s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.el.style.cursor = "default";
+    this.eventBus = i, this.el = b(e, t), this.enable = s, s ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.el.style.cursor = "default";
   }
   transform(t) {
     this.el.style.transform = `translate(${t.x}px, ${t.y}px)`, this.el.style.width = `${t.width}px`, this.el.style.height = `${t.height}px`;
@@ -551,54 +551,51 @@ class at {
     return t;
   }
 }
-const lt = ["real", "relative", "percent"];
-var z = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(z || {});
-const x = 1e-4, dt = c.base;
-function ct(n) {
+const rt = ["real", "relative", "percent"];
+var v = /* @__PURE__ */ ((n) => (n.waiting = "waiting", n.ready = "ready", n.reloading = "reloading", n.error = "error", n))(v || {});
+const W = 1e-4, at = c.base;
+function lt(n) {
   return n.charAt(0).toUpperCase() + n.slice(1);
 }
-function v(n) {
+function z(n) {
   return n == null;
 }
 function u(n, t, e, i = !1) {
-  if (v(t))
+  if (z(t))
     return e;
   if (typeof t != "number")
-    throw g.new(n, "number");
+    throw w.new(n, "number");
   if (Number.isNaN(t))
-    throw g.new(n, "NaN", !1);
+    throw w.new(n, "NaN", !1);
   if (i ? t < 0 : t <= 0)
-    throw g.new(n, "positive");
+    throw w.new(n, "positive");
   return t;
 }
-function I(n, t, e) {
-  if (v(t))
+function E(n, t, e) {
+  if (z(t))
     return e;
   if (typeof t != "boolean")
-    throw g.new(n, "boolean");
+    throw w.new(n, "boolean");
   return t;
 }
-function b(n, t, e) {
-  if (v(t))
+function M(n, t, e) {
+  if (z(t))
     return e;
-  if (typeof t != "string" || !lt.includes(t))
-    throw g.new(n, "SizeUnit");
+  if (typeof t != "string" || !rt.includes(t))
+    throw w.new(n, "SizeUnit");
   return t;
 }
-const ut = (n, t) => {
-  var s, h, r, a, l, d, m, f, p, L, X, A, H, Y, T, O;
+const dt = (n, t) => {
+  var s, h, r, a, l, d, m, f, p, B, D, L, X, H, Y, A;
   const e = t || {};
   if (typeof e != "object" || e === null)
-    throw g.new("options", "object");
-  const i = (j, V) => {
-    const C = n[`${dt}${ct(j)}`];
-    if (!C)
-      return V;
-    const M = C.toLowerCase();
-    if (M === "null" || M === "undefined" || M === "nil")
-      return V;
-    const R = Number.parseFloat(C);
-    return R.toString() === C ? R : M === "true" ? !0 : M === "false" ? !1 : C;
+    throw w.new("options", "object");
+  const i = (U, T) => {
+    const x = n[`${at}${lt(U)}`];
+    if (!x)
+      return T;
+    const C = x.toLowerCase();
+    return C === "null" || C === "undefined" || C === "nil" ? T : x.trim().length !== 0 && !Number.isNaN(Number(x)) ? Number(x) : C === "true" ? !0 : C === "false" ? !1 : x;
   };
   return {
     aspectRatio: i("aspectRatio", e.aspectRatio),
@@ -621,35 +618,35 @@ const ut = (n, t) => {
       x: i("startSizeX", (m = e.startSize) == null ? void 0 : m.x),
       y: i("startSizeY", (f = e.startSize) == null ? void 0 : f.y),
       width: i("startSizeWidth", (p = e.startSize) == null ? void 0 : p.width),
-      height: i("startSizeHeight", (L = e.startSize) == null ? void 0 : L.height),
-      unit: i("startSizeUnit", (X = e.startSize) == null ? void 0 : X.unit)
+      height: i("startSizeHeight", (B = e.startSize) == null ? void 0 : B.height),
+      unit: i("startSizeUnit", (D = e.startSize) == null ? void 0 : D.unit)
     },
     defaultSize: {
-      x: i("defaultSizeX", (A = e.defaultSize) == null ? void 0 : A.x),
-      y: i("defaultSizeY", (H = e.defaultSize) == null ? void 0 : H.y),
-      width: i("defaultSizeWidth", (Y = e.defaultSize) == null ? void 0 : Y.width),
-      height: i("defaultSizeHeight", (T = e.defaultSize) == null ? void 0 : T.height),
-      unit: i("defaultSizeUnit", (O = e.defaultSize) == null ? void 0 : O.unit)
+      x: i("defaultSizeX", (L = e.defaultSize) == null ? void 0 : L.x),
+      y: i("defaultSizeY", (X = e.defaultSize) == null ? void 0 : X.y),
+      width: i("defaultSizeWidth", (H = e.defaultSize) == null ? void 0 : H.width),
+      height: i("defaultSizeHeight", (Y = e.defaultSize) == null ? void 0 : Y.height),
+      unit: i("defaultSizeUnit", (A = e.defaultSize) == null ? void 0 : A.unit)
     }
   };
-}, B = (n, t, e) => Math.abs(n - t) < e, gt = (n) => {
+}, ct = (n, t, e) => Math.abs(n - t) < e, ut = (n) => {
   var r;
   const t = u("aspectRatio", n.aspectRatio, 0), e = {
     width: u("minSizeWidth", n.minSize.width, 0),
     height: u("minSizeHeight", n.minSize.height, 0),
-    unit: b("minSizeUnit", (r = n.minSize) == null ? void 0 : r.unit, "real")
+    unit: M("minSizeUnit", (r = n.minSize) == null ? void 0 : r.unit, "real")
   }, i = {
     width: u("maxSizeWidth", n.maxSize.width, 0),
     height: u("maxSizeHeight", n.maxSize.height, 0),
-    unit: b("maxSizeUnit", n.maxSize.unit, "real")
+    unit: M("maxSizeUnit", n.maxSize.unit, "real")
   }, s = {
     x: u("startSizeX", n.startSize.x, 0, !0),
     y: u("startSizeY", n.startSize.y, 0, !0),
     width: u("startSizeWidth", n.startSize.width, 0),
     height: u("startSizeHeight", n.startSize.height, 0),
-    unit: b("startSizeUnit", n.startSize.unit, "real"),
-    centeredX: v(n.startSize.x),
-    centeredY: v(n.startSize.y),
+    unit: M("startSizeUnit", n.startSize.unit, "real"),
+    centeredX: z(n.startSize.x),
+    centeredY: z(n.startSize.y),
     allowChange: !1
   };
   s.allowChange = s.width === 0 && s.height === 0;
@@ -658,68 +655,46 @@ const ut = (n, t) => {
     y: u("defaultSizeY", n.defaultSize.y, 0, !0),
     width: u("defaultSizeWidth", n.defaultSize.width, 0),
     height: u("defaultSizeHeight", n.defaultSize.height, 0),
-    unit: b("defaultSizeUnit", n.defaultSize.unit, "real"),
-    centeredX: v(n.defaultSize.x),
-    centeredY: v(n.defaultSize.y),
+    unit: M("defaultSizeUnit", n.defaultSize.unit, "real"),
+    centeredX: z(n.defaultSize.x),
+    centeredY: z(n.defaultSize.y),
     allowChange: !1
   };
-  if (h.allowChange = h.width === 0 && h.height === 0, t) {
-    if (e.width && e.height) {
-      const a = e.width / e.height;
-      if (!B(a, t, x))
-        throw g.aspectRatio(
-          "minimum",
-          a,
-          t,
-          x
-        );
-    }
-    if (s.width && s.height) {
-      const a = s.width / s.height;
-      if (!B(a, t, x))
-        throw g.aspectRatio(
-          "startSize",
-          a,
-          t,
-          x
-        );
-    }
-    if (h.width && h.height) {
-      const a = h.width / h.height;
-      if (!B(a, t, x))
-        throw g.aspectRatio(
-          "defaultSize",
-          a,
-          t,
-          x
-        );
-    }
+  if (h.allowChange = h.width === 0 && h.height === 0, t && e.width && e.height) {
+    const a = e.width / e.height;
+    if (!ct(a, t, W))
+      throw w.aspectRatio(
+        "minimum",
+        a,
+        t,
+        W
+      );
   }
   return {
     aspectRatio: t,
-    allowFlip: I("allowFlip", n.allowFlip, !0),
-    allowNewSelection: I(
+    allowFlip: E("allowFlip", n.allowFlip, !0),
+    allowNewSelection: E(
       "allowNewSelection",
       n.allowNewSelection,
       !0
     ),
-    allowMove: I("allowMove", n.allowMove, !0),
-    allowResize: I("allowResize", n.allowResize, !0),
-    returnMode: b("returnMode", n.returnMode, "real"),
+    allowMove: E("allowMove", n.allowMove, !0),
+    allowResize: E("allowResize", n.allowResize, !0),
+    returnMode: M("returnMode", n.returnMode, "real"),
     minSize: e,
     maxSize: i,
     firstInitSize: s,
     startSize: h
   };
 };
-class wt {
+class gt {
   constructor(t, e, i, s, h) {
     o(this, "position");
     o(this, "eventBus");
     o(this, "el");
     o(this, "enable");
     o(this, "listener");
-    this.position = i.position, this.eventBus = s, this.enable = h, this.el = E(e, t), this.el.style.cursor = i.cursor, h ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.hide();
+    this.position = i.position, this.eventBus = s, this.enable = h, this.el = b(e, t), this.el.style.cursor = i.cursor, h ? (this.listener = this.mouseEvent(), this.el.addEventListener("mousedown", this.listener)) : this.hide();
   }
   show() {
     this.el.style.display = "block";
@@ -756,7 +731,7 @@ class wt {
     return t;
   }
 }
-const mt = [
+const wt = [
   { position: { x: 0, y: 0 }, cursor: "nw-resize" },
   { position: { x: 0.5, y: 0 }, cursor: "n-resize" },
   { position: { x: 1, y: 0 }, cursor: "ne-resize" },
@@ -766,16 +741,16 @@ const mt = [
   { position: { x: 0, y: 1 }, cursor: "sw-resize" },
   { position: { x: 0, y: 0.5 }, cursor: "w-resize" }
 ];
-class ft {
+class mt {
   /**
    * Creates a new Handle instance.
    */
   constructor(t, e, i, s, h) {
     o(this, "el");
     o(this, "handles", []);
-    this.el = E(e, t);
-    for (const r of mt) {
-      const a = new wt(
+    this.el = b(e, t);
+    for (const r of wt) {
+      const a = new gt(
         this.el,
         h,
         r,
@@ -806,8 +781,8 @@ class ft {
     return t ? e ? this.handles[0] : this.handles[6] : e ? this.handles[2] : this.handles[4];
   }
 }
-const N = { width: 0, height: 0 };
-class zt {
+const $ = { width: 0, height: 0 };
+class pt {
   constructor(t, e) {
     o(this, "replaceDOM", !1);
     o(this, "htmlContainer");
@@ -820,14 +795,15 @@ class zt {
     o(this, "box");
     o(this, "currentMove");
     o(this, "activeHandle");
-    o(this, "real", N);
-    o(this, "relative", N);
-    o(this, "ratio", N);
+    o(this, "real", $);
+    o(this, "relative", $);
+    o(this, "ratio", $);
     o(this, "firstInit", !0);
     o(this, "isDomCreated", !1);
-    o(this, "status", z.waiting);
+    o(this, "status", v.waiting);
     o(this, "eventBus", this.event.bind(this));
     o(this, "observer");
+    o(this, "preventDoubleLoad");
     o(this, "callbacks", {
       onInitialize: void 0,
       onCropStart: void 0,
@@ -837,12 +813,12 @@ class zt {
     });
     try {
       this.parseCallbackFunctions(e);
-      const [i, s] = Z(t);
-      this.htmlImg = i, s ? this.htmlContainer = s : this.replaceDOM = !0, this.changeStatus(z.waiting);
-      const h = ut(this.htmlImg.dataset, e);
-      this.options = gt(h), this.initializeCropper();
+      const [i, s] = P(t);
+      this.htmlImg = i, s ? this.htmlContainer = s : this.replaceDOM = !0, this.changeStatus(v.waiting);
+      const h = dt(this.htmlImg.dataset, e);
+      this.options = ut(h), this.initializeCropper();
     } catch (i) {
-      if (i instanceof y || i instanceof g)
+      if (i instanceof y || i instanceof w)
         this.onErrorCallback(i);
       else
         throw i;
@@ -883,7 +859,7 @@ class zt {
     try {
       this.firstInit = !1, this.destroy(), this.initializeCropper();
     } catch (t) {
-      if (t instanceof y || t instanceof g || t instanceof S)
+      if (t instanceof y || t instanceof w || t instanceof S)
         this.onErrorCallback(t);
       else
         throw t;
@@ -988,7 +964,7 @@ class zt {
    * @param {TrueCropperHtmlError | TrueCropperImageError | TrueCropperOptionsError} error - The error object containing information about the error.
    */
   onErrorCallback(t) {
-    this.changeStatus(z.error);
+    this.changeStatus(v.error);
     const e = {
       name: t.name,
       message: t.message,
@@ -1017,15 +993,15 @@ class zt {
     });
   }
   initializeCropper() {
-    this.initializeObserver(), this.htmlImg.width !== 0 && this.htmlImg.height !== 0 && this.initialize(), this.htmlImg.onload = () => {
-      this.changeStatus(
-        this.status === z.waiting ? z.waiting : z.reloading
-      ), this.observer.unobserve(this.htmlImg), this.initialize();
+    this.initializeObserver(), this.htmlImg.src && this.htmlImg.width !== 0 && this.htmlImg.height !== 0 && (this.preventDoubleLoad = this.htmlImg.src, this.initialize()), this.htmlImg.onload = () => {
+      !this.htmlImg.src || this.preventDoubleLoad === this.htmlImg.src || (this.preventDoubleLoad = void 0, this.changeStatus(
+        this.status === v.waiting ? v.waiting : v.reloading
+      ), this.observer.unobserve(this.htmlImg), this.initialize());
     };
   }
   initialize() {
     try {
-      this.createDOM(), this.calcContainerProps(), this.updateRelativeSize(), this.createNewBox(), this.onInitializeCallback(), this.observer.observe(this.htmlImg), this.changeStatus(z.ready), this.onCropEndCallback();
+      this.createDOM(), this.calcContainerProps(), this.updateRelativeSize(), this.createNewBox(), this.onInitializeCallback(), this.observer.observe(this.htmlImg), this.changeStatus(v.ready), this.onCropEndCallback();
     } catch (t) {
       if (t instanceof S)
         this.onErrorCallback(t);
@@ -1041,17 +1017,17 @@ class zt {
       this.htmlImg
     ), this.htmlContainer.appendChild(this.htmlImg));
     const t = this.htmlContainer;
-    nt(t), this.htmlImg.classList.add(c.img), this.background = new ot(t, c.background), this.newSelection = new rt(
+    it(t), this.htmlImg.classList.add(c.img), this.background = new nt(t, c.background), this.newSelection = new ht(
       t,
       c.new,
       this.eventBus,
       this.options.allowNewSelection
-    ), this.selection = new at(
+    ), this.selection = new ot(
       t,
       c.selection,
       this.eventBus,
       this.options.allowMove
-    ), this.handles = new ft(
+    ), this.handles = new mt(
       t,
       c.hanleds,
       this.eventBus,
@@ -1071,20 +1047,20 @@ class zt {
     const e = {
       x: t.centeredX,
       y: t.centeredX
-    }, i = t.allowChange, s = J(
+    }, i = t.allowChange, s = Z(
       t,
       this.options.minSize,
       this.options.maxSize,
       this.real,
       this.ratio
-    ), h = K(
+    ), h = G(
       s,
       this.real,
       this.options.aspectRatio,
       i,
       e
     );
-    Q(h), this.box = new st(h);
+    J(h), this.box = new et(h);
   }
   updateRelativeSize() {
     const { width: t, height: e } = this.htmlImg.getBoundingClientRect();
@@ -1161,7 +1137,7 @@ class zt {
    * Executes on handle move. Main logic to manage the movement of handles.
    */
   onHandleMoveMoving(t) {
-    const e = this.mouseCoordinates(t), i = G(
+    const e = this.mouseCoordinates(t), i = q(
       e,
       this.activeHandle.x,
       this.activeHandle.y
@@ -1224,6 +1200,6 @@ class zt {
   }
 }
 export {
-  zt as default
+  pt as default
 };
 //# sourceMappingURL=trueCropper.es.js.map

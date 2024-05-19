@@ -148,6 +148,7 @@ declare class TrueCropper {
     status: Status;
     eventBus: ({ type, data }: TrueCropperCoreCallbackEvent) => boolean;
     private observer;
+    private preventDoubleLoad?;
     private callbacks;
     constructor(element: HTMLImageElement | string, optionsProps?: Partial<OptionsPropsValuesType>);
     getImagePreview(): HTMLCanvasElement | undefined;

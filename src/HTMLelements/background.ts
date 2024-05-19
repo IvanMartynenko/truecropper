@@ -38,13 +38,15 @@ export default class Background {
     const y2 = box.y + box.height;
     this.nested[0].style.height = `${box.y}px`;
     this.nested[0].style.left = `${box.x}px`;
-    this.nested[0].style.width = `${box.width}px`;
+    // this.nested[0].style.width = `${box.width}px`;
+    this.nested[0].style.right = `calc(100% - ${box.width}px - ${box.x}px)`;
 
     this.nested[1].style.left = `${x2}px`;
     // this.nested[1].style.top = `${box.y}px`;
 
     this.nested[2].style.left = `${box.x}px`;
-    this.nested[2].style.width = `${box.width}px`;
+    // this.nested[2].style.width = `${box.width}px`;
+    this.nested[2].style.right = `calc(100% - ${box.width}px - ${box.x}px)`;
     this.nested[2].style.top = `${y2}px`;
 
     // this.nested[3].style.top = `${box.y}px`;
