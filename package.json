@@ -50,7 +50,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "jest-test-gen": "^1.4.3",
+    "jest-test-gen": "^0.0.6",
     "prettier": "^3.2.5",
     "prettier-eslint": "^16.3.0",
     "sass": "^1.77.0",
@@ -62,7 +62,7 @@
     "tslib": "^2.6.2",
     "typescript": "^5.3.3",
     "vite": "^5.1.4",
-    "vite-plugin-dts": "^3.7.3",
+    "vite-plugin-dts": "^4.5.0",
     "vite-plugin-sass-glob-import": "^3.0.2"
   }
 }
