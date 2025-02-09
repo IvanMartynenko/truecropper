@@ -63,6 +63,7 @@
     "typescript": "^5.3.3",
     "vite": "^5.1.4",
     "vite-plugin-dts": "^4.5.0",
-    "vite-plugin-sass-glob-import": "^3.0.2"
+    "vite-plugin-sass-glob-import": "^3.0.2",
+    "vite-plugin-static-copy": "^2.2.0"
   }
 }

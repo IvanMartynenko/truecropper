@@ -2,10 +2,21 @@ import dts from "vite-plugin-dts";
 import path from "path";
 import sassGlobImports from "vite-plugin-sass-glob-import";
 import { defineConfig, UserConfig } from "vite";
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 export default defineConfig({
   base: "./",
-  plugins: [dts({ rollupTypes: true }), sassGlobImports()],
+  plugins: [
+    dts({ rollupTypes: true }), sassGlobImports(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'assets/*.scss',
+          dest: '', // Copies to the root of the dist folder
+        },
+      ],
+    }),
+  ],
   build: {
     sourcemap: true,
     lib: {
