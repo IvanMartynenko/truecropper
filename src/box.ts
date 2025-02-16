@@ -1,11 +1,11 @@
 import {
-  BoxInitInterface,
-  BoxProps,
-  Coordinates,
-  Idd,
-  Idd2,
-  Points,
-  Size,
+  TrueCropperBoxInitConfig,
+  TrueCropperBoxProps,
+  TrueCropperCoordinates,
+  TrueCropperNullableBoxData,
+  TrueCropperDragData,
+  TrueCropperPoints,
+  TrueCropperSize,
 } from "./types";
 import { adjustToAspectRatio, containerToMaxMinSize } from "./helpers";
 
@@ -13,17 +13,18 @@ import { adjustToAspectRatio, containerToMaxMinSize } from "./helpers";
  * Box component
  */
 export default class Box {
-  private coordinates: Coordinates;
-  private size: Size;
-  private minSize: Size;
-  private maxSize: Size;
-  private imgSize: Size;
+  private coordinates: TrueCropperCoordinates;
+  private size: TrueCropperSize;
+  private minSize: TrueCropperSize;
+  private maxSize: TrueCropperSize;
+  private imgSize: TrueCropperSize;
   private aspectRatio: number;
+  private epsilon: number;
 
   /**
    * Creates a new Box instance.
    * @constructor
-   * @param {BoxInitInterface} - Initialization parameters.
+   * @param {TrueCropperBoxInitConfig} - Initialization parameters.
    */
   public constructor({
     coordinates,
@@ -32,31 +33,50 @@ export default class Box {
     maxSize,
     imgProps,
     aspectRatio,
-  }: BoxInitInterface) {
+    epsilon,
+  }: TrueCropperBoxInitConfig) {
     this.coordinates = { ...coordinates };
     this.size = { ...size };
     this.minSize = { ...minSize };
     this.maxSize = { ...maxSize };
     this.imgSize = { ...imgProps };
     this.aspectRatio = aspectRatio;
+    this.epsilon = epsilon;
   }
 
   /**
    * Sets the value of coordinates and size properties based on the provided BoxProps object.
-   * @param {BoxProps} box - The BoxProps object containing x, y, width, and height properties.
+   * @param {TrueCropperBoxProps} box - The BoxProps object containing x, y, width, and height properties.
    * @returns {void}
    */
-  public setValue(box: BoxProps) {
+  public setValue(box: TrueCropperBoxProps) {
+    if (box.width < this.minSize.width || box.height < this.minSize.height) {
+      return { ok: false, message: '' };
+    }
+    if (box.width > this.maxSize.width || box.height > this.maxSize.height) {
+      return { ok: false, message: '' };
+    }
+    if (this.aspectRatio && box.width / box.height - this.aspectRatio > this.epsilon) {
+      return { ok: false, message: '' };
+    }
+    if (box.x < 0 || box.x > this.imgSize.width || box.y < 0 || box.y > this.imgSize.height) {
+      return { ok: false, message: '' };
+    }
+    if (box.x + box.width > this.imgSize.width || box.y + box.height > this.imgSize.height) {
+      return { ok: false, message: '' };
+    }
+
     this.coordinates = { x: box.x, y: box.y };
     this.size = { width: box.width, height: box.height };
+    return { ok: true, message: '' };
   }
 
   /**
    * Moves the box to the specified coordinates within the boundaries of the image.
-   * @param {Coordinates} coordinates - The new x and y coordinates for the box.
+   * @param {TrueCropperCoordinates} coordinates - The new x and y coordinates for the box.
    * @returns {void}
    */
-  public move(coordinates: Coordinates) {
+  public move(coordinates: TrueCropperCoordinates) {
     // Ensure box is within the boundaries
     this.coordinates.x = Math.min(
       Math.max(coordinates.x, 0),
@@ -70,46 +90,58 @@ export default class Box {
 
   /**
    * Resizes the box to a new size.
-   * @param {Size} size - The new size for the box.
-   * @param {Points} points - The relative points for resizing.
+   * @param {TrueCropperSize} size - The new size for the box.
+   * @param {TrueCropperPoints} points - The relative points for resizing.
    * @returns {void}
    */
-  public resize(size: Size, points: Points) {
+  public resize(size: TrueCropperSize, points: TrueCropperPoints) {
+    if (points.x < 0 || points.x > 1 || points.y < 0 || points.y > 1) {
+      return { ok: false, message: '' };
+    }
     const fromX = this.coordinates.x + this.size.width * points.x;
     const fromY = this.coordinates.y + this.size.height * points.y;
 
-    this.coordinates = {
-      x: fromX - size.width * points.x,
-      y: fromY - size.height * points.y,
-    };
-    this.size = { width: size.width, height: size.height };
+
+    const x = fromX - size.width * points.x;
+    const y = fromY - size.height * points.y;
+
+
+    return this.setValue({ x, y, width: size.width, height: size.height });
   }
 
   /**
    * Scales the box by a factor and relative points.
    * @param {number} factor - The scaling factor.
-   * @param {Points} points - The relative points for scaling.
+   * @param {TrueCropperPoints} points - The relative points for scaling.
    * @returns {void}
    */
-  public scale(factor: number, points: Points) {
+  public scale(factor: number, points: TrueCropperPoints) {
     const width = this.size.width * factor;
     const height = this.size.height * factor;
-    this.resize({ width, height }, points);
+    return this.resize({ width, height }, points);
+  }
+
+  /**
+   * Retrieves the current dimensions of the box.
+   * @returns {TrueCropperSize} The width and height of the box.
+   */
+  public getBoxSize() {
+    return { ...this.imgSize };
   }
 
   /**
    * Retrieves the current coordinates of the box.
-   * @returns {Coordinates} The current x and y coordinates of the box.
+   * @returns {TrueCropperCoordinates} The current x and y coordinates of the box.
    */
-  public getCoourdinates(): Coordinates {
+  public getCoourdinates(): TrueCropperCoordinates {
     return { x: this.coordinates.x, y: this.coordinates.y };
   }
 
   /**
    * Retrieves the current box.
-   * @returns {BoxProps} The current x and y coordinates, width, and height of the box.
+   * @returns {TrueCropperBoxProps} The current x and y coordinates, width, and height of the box.
    */
-  public getValue(): BoxProps {
+  public getValue(): TrueCropperBoxProps {
     return {
       x: this.coordinates.x,
       y: this.coordinates.y,
@@ -120,18 +152,18 @@ export default class Box {
 
   /**
    * Retrieves the current real(natural) value of the box including coordinates, width, and height.
-   * @returns {BoxProps} The current x and y coordinates, width, and height of the box.
+   * @returns {TrueCropperBoxProps} The current x and y coordinates, width, and height of the box.
    */
-  public getValueReal(): BoxProps {
+  public getValueReal(): TrueCropperBoxProps {
     return this.getValue();
   }
 
   /**
    * Retrieves the current value of the box relative to a specified width and height.
-   * @param {Size} size - The width and height for calculating relative values.
-   * @returns {BoxProps} The current x and y coordinates, width, and height of the box relative to the specified width and height.
+   * @param {TrueCropperSize} size - The width and height for calculating relative values.
+   * @returns {TrueCropperBoxProps} The current x and y coordinates, width, and height of the box relative to the specified width and height.
    */
-  public getValueRelative({ width, height }: Size): BoxProps {
+  public getValueRelative({ width, height }: TrueCropperSize): TrueCropperBoxProps {
     return {
       x: this.coordinates.x * width,
       y: this.coordinates.y * height,
@@ -142,9 +174,9 @@ export default class Box {
 
   /**
    * Retrieves the current value of the box as a percentage of the image size.
-   * @returns {BoxProps} The current x and y coordinates, width, and height of the box as a percentage of the image size.
+   * @returns {TrueCropperBoxProps} The current x and y coordinates, width, and height of the box as a percentage of the image size.
    */
-  public getValuePercent(): BoxProps {
+  public getValuePercent(): TrueCropperBoxProps {
     return {
       x: (this.coordinates.x / this.imgSize.width) * 100,
       y: (this.coordinates.y / this.imgSize.height) * 100,
@@ -155,10 +187,10 @@ export default class Box {
 
   /**
    * Calculates the coordinates of the opposite corner of the box based on relative points.
-   * @param {Points} points - The relative points determining the opposite corner.
-   * @returns {Coordinates} The calculated x and y coordinates of the opposite corner.
+   * @param {TrueCropperPoints} points - The relative points determining the opposite corner.
+   * @returns {TrueCropperCoordinates} The calculated x and y coordinates of the opposite corner.
    */
-  public getOppositeCornerCoordinates(points: Points): Coordinates {
+  public getOppositeCornerCoordinates(points: TrueCropperPoints): TrueCropperCoordinates {
     const x =
       points.x === 0.5
         ? -1
@@ -172,10 +204,10 @@ export default class Box {
 
   /**
    * Prepares and applies new size and coordinates for the box based on the provided data.
-   * @param {Idd} newBox - The new box data to apply.
+   * @param {TrueCropperNullableBoxData} newBox - The new box data to apply.
    * @returns {boolean} Returns true if the new size and coordinates were successfully applied, false otherwise.
    */
-  public prepareAndApplyNewSizeAndCoordinates(newBox: Idd) {
+  public prepareAndApplyNewSizeAndCoordinates(newBox: TrueCropperNullableBoxData) {
     const data = this.prepareSizeAndCoordinates(newBox);
     if (data.size.width === 0 || data.size.height === 0) {
       return false;
@@ -193,10 +225,10 @@ export default class Box {
 
   /**
    * Prepares and calculates the size and coordinates for the new box based on the provided data.
-   * @param {Idd} newBox - The new box data to calculate size and coordinates for.
-   * @returns {Idd2} An object containing the calculated size, coordinates, and other relevant properties.
+   * @param {TrueCropperNullableBoxData} newBox - The new box data to calculate size and coordinates for.
+   * @returns {TrueCropperDragData} An object containing the calculated size, coordinates, and other relevant properties.
    */
-  private prepareSizeAndCoordinates(newBox: Idd): Idd2 {
+  private prepareSizeAndCoordinates(newBox: TrueCropperNullableBoxData): TrueCropperDragData {
     const size = {
       width: newBox.size.width ?? this.size.width,
       height: newBox.size.height ?? this.size.height,
@@ -206,43 +238,44 @@ export default class Box {
       y: newBox.coordinates.y ?? this.coordinates.y + this.size.height / 2,
     };
     const isVerticalMovement = newBox.coordinates.y !== null;
-    const isMultuAxis = isVerticalMovement && newBox.coordinates.x !== null;
+    const isMultiAxis = isVerticalMovement && newBox.coordinates.x !== null;
     return {
       size,
       coordinates,
       isVerticalMovement,
-      isMultuAxis,
+      isMultiAxis,
       points: newBox.points,
     };
   }
 
   /**
    * Adjusts and calculates the size based on aspect ratio and constraints for the new box.
-   * @param {Idd2} data - The data containing coordinates, size, and other parameters for adjustment.
-   * @returns {Size} The adjusted size within the constraints of aspect ratio, min size, and max size.
+   * @param {TrueCropperDragData} data - The data containing coordinates, size, and other parameters for adjustment.
+   * @returns {TrueCropperSize} The adjusted size within the constraints of aspect ratio, min size, and max size.
    */
-  private adjustAndCalculateSize(data: Idd2): Size {
+  private adjustAndCalculateSize(data: TrueCropperDragData): TrueCropperSize {
     const size = adjustToAspectRatio(data, this.imgSize, this.aspectRatio);
-    return containerToMaxMinSize({
+    const value = containerToMaxMinSize({
       size,
       minSize: this.minSize,
       maxSize: this.maxSize,
       aspectRatio: this.aspectRatio,
     });
+    return value;
   }
 
   /**
    * Adjusts and calculates the new coordinates based on the input coordinates, size, and points.
-   * @param {Coordinates} coordinates - The original coordinates.
-   * @param {Size} size - The size to adjust the coordinates.
-   * @param {Points} points - The points to calculate the adjustment.
-   * @returns {Coordinates} The adjusted coordinates based on the size and points.
+   * @param {TrueCropperCoordinates} coordinates - The original coordinates.
+   * @param {TrueCropperSize} size - The size to adjust the coordinates.
+   * @param {TrueCropperPoints} points - The points to calculate the adjustment.
+   * @returns {TrueCropperCoordinates} The adjusted coordinates based on the size and points.
    */
   private adjustAndCalculateCoordinate(
-    coordinates: Coordinates,
-    size: Size,
-    points: Points,
-  ): Coordinates {
+    coordinates: TrueCropperCoordinates,
+    size: TrueCropperSize,
+    points: TrueCropperPoints,
+  ): TrueCropperCoordinates {
     return {
       x: coordinates.x - size.width * points.x,
       y: coordinates.y - size.height * points.y,

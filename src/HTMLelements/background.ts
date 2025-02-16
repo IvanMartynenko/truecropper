@@ -3,7 +3,7 @@
  */
 
 import { createDiv } from "../helpers";
-import { BoxProps } from "../types";
+import { TrueCropperBoxProps } from "../types";
 
 export default class Background {
   private nested: HTMLDivElement[] = [];
@@ -33,7 +33,7 @@ export default class Background {
     }
   }
 
-  public transform(box: BoxProps) {
+  public transform(box: TrueCropperBoxProps) {
     const x2 = box.x + box.width;
     const y2 = box.y + box.height;
     this.nested[0].style.height = `${box.y}px`;

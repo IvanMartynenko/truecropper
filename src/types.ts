@@ -1,176 +1,245 @@
 import TrueCropperCore from "./trueCropper";
 
-export type InitQuerySelectorOrHtmlElementType = HTMLImageElement | string;
+// Represents an HTMLImageElement or a selector string.
+export type TrueCropperImageElementOrSelector = HTMLImageElement | string;
 
-export const SIZE_UNIT = ["real", "relative", "percent"] as const;
-export type SizeUnit = (typeof SIZE_UNIT)[number];
+// Allowed units for sizing.
+export const TRUECROPPER_SIZE_UNITS = ["real", "relative", "percent"] as const;
+export type TrueCropperSizeUnit = (typeof TRUECROPPER_SIZE_UNITS)[number];
 
-export interface Coordinates {
+/** Represents a point in 2D space. */
+export interface TrueCropperCoordinates {
   x: number;
   y: number;
 }
-export interface Points {
-  x: number; // 1 move to left, 0 move to right, 0.5 move from center
-  y: number; // 1 move to top, 0 move to bottom, 0.5 move from center
+
+/**
+ * Describes directional points.
+ * @property x - 1 for left, 0 for right, 0.5 for centered horizontally.
+ * @property y - 1 for top, 0 for bottom, 0.5 for centered vertically.
+ */
+export interface TrueCropperPoints {
+  x: number;
+  y: number;
 }
-export interface Size {
+
+/** Represents width and height dimensions. */
+export interface TrueCropperSize {
   width: number;
   height: number;
 }
-export interface UnitProps {
-  unit: SizeUnit;
-}
-export interface BoxProps extends Coordinates, Size {}
-export interface SizeWithUnit extends Size, UnitProps {}
 
-export interface StartSizeProps extends Coordinates, Partial<Size>, UnitProps {}
-export interface StartSize extends Coordinates, Size, UnitProps {
+/** Additional properties indicating a size unit. */
+export interface TrueCropperUnitProps {
+  unit: TrueCropperSizeUnit;
+}
+
+/** Combines position and size data. */
+export interface TrueCropperBoxProps extends TrueCropperCoordinates, TrueCropperSize {}
+
+/** Represents a size value along with its unit. */
+export interface TrueCropperSizeWithUnit extends TrueCropperSize, TrueCropperUnitProps {}
+
+/**
+ * Initial sizing properties (with optional size values) used during setup.
+ */
+export interface TrueCropperInitialSizeProps extends TrueCropperCoordinates, Partial<TrueCropperSize>, TrueCropperUnitProps {}
+
+/**
+ * The complete initial size configuration.
+ */
+export interface TrueCropperInitialSize extends TrueCropperCoordinates, TrueCropperSize, TrueCropperUnitProps {
   centeredX: boolean;
   centeredY: boolean;
   allowChange: boolean;
 }
 
-export type CallbackType<T, K> = (klass: T, values: K) => void;
-export type CallbackOnCrop = CallbackType<TrueCropperCore, BoxProps>;
+/**
+ * A generic callback type.
+ * @param instance - The TrueCropperCore instance.
+ * @param values - Associated values.
+ */
+export type TrueCropperCallback<T, K> = (instance: T, values: K) => void;
+export type TrueCropperCropCallback = TrueCropperCallback<TrueCropperCore, TrueCropperBoxProps>;
 
-export interface CallbackErrorData {
+/**
+ * Data structure for error details during cropping.
+ */
+export interface TrueCropperErrorData {
   target?: string;
-  targetSize?: Size;
-  targetCoordinates?: Coordinates;
+  targetSize?: TrueCropperSize;
+  targetCoordinates?: TrueCropperCoordinates;
   source?: string;
-  sourceSize?: Size;
+  sourceSize?: TrueCropperSize;
   name?: string;
   object?: string;
 }
 
-export interface CallbackError {
+/** Represents an error during the cropping process. */
+export interface TrueCropperError {
   name: string;
   message: string;
   messageId: number;
-  data: CallbackErrorData;
+  data: TrueCropperErrorData;
 }
-export type CallbackOnError = CallbackType<TrueCropperCore, CallbackError>;
 
-export interface OptionsPropsValuesType {
+export type TrueCropperErrorCallback = TrueCropperCallback<TrueCropperCore, TrueCropperError>;
+
+/**
+ * Options to configure the TrueCropper.
+ */
+export interface TrueCropperOptions {
   aspectRatio: number;
-  maxSize: Partial<SizeWithUnit>;
-  minSize: Partial<SizeWithUnit>;
-  startSize: Partial<StartSizeProps>;
-  defaultSize: Partial<StartSizeProps>;
-  returnMode: SizeUnit;
+  epsilon: number;
+  maxSize: Partial<TrueCropperSizeWithUnit>;
+  minSize: Partial<TrueCropperSizeWithUnit>;
+  startSize: Partial<TrueCropperInitialSizeProps>;
+  defaultSize: Partial<TrueCropperInitialSizeProps>;
+  returnMode: TrueCropperSizeUnit;
   allowFlip: boolean;
   allowNewSelection: boolean;
   allowMove: boolean;
   allowResize: boolean;
-  onInitialize: CallbackOnCrop;
-  onCropStart: CallbackOnCrop;
-  onCropMove: CallbackOnCrop;
-  onCropEnd: CallbackOnCrop;
-  onError: CallbackOnError;
+  onInitialize: TrueCropperCropCallback;
+  onCropStart: TrueCropperCropCallback;
+  onCropMove: TrueCropperCropCallback;
+  onCropEnd: TrueCropperCropCallback;
+  onError: TrueCropperErrorCallback;
 }
 
-export interface TrueCropperCoreHandleStartEvent {
+/* ────── Event Types ────── */
+
+/** Event fired when a handle starts moving. */
+export interface TrueCropperHandleStartEvent {
   type: "handlestart";
-  data: ActiveHandleType;
+  data: TrueCropperActiveHandle;
 }
 
-export interface TrueCropperCoreHandleMoveEvent {
+/** Event fired during handle movement. */
+export interface TrueCropperHandleMoveEvent {
   type: "handlemove";
-  data: Coordinates;
+  data: TrueCropperCoordinates;
 }
 
-export interface TrueCropperCoreHandleEndEvent {
+/** Event fired when a handle movement ends. */
+export interface TrueCropperHandleEndEvent {
   type: "handleend";
   data?: null;
 }
 
-export interface TrueCropperCoreRegionMoveEvent {
+/** Event fired during region movement (start, move, or end). */
+export interface TrueCropperRegionMoveEvent {
   type: "regionstart" | "regionmove" | "regionend";
-  data: Coordinates;
+  data: TrueCropperCoordinates;
 }
 
-export interface CreateNewBoxTypeEvent {
-  coordinates: Coordinates;
-  size: Size;
+/** Data for creating a new crop box. */
+export interface TrueCropperNewBoxEventData {
+  coordinates: TrueCropperCoordinates;
+  size: TrueCropperSize;
   leftMovable: boolean;
   topMovable: boolean;
 }
 
-export interface TrueCropperCoreCreateNewBoxEvent {
+/** Event fired when a new crop box is created. */
+export interface TrueCropperNewBoxEvent {
   type: "createnewbox";
-  data: CreateNewBoxTypeEvent;
+  data: TrueCropperNewBoxEventData;
 }
 
-export interface ActiveHandleDataType {
+/** Additional data for active handles. */
+export interface TrueCropperActiveHandleData {
   left: boolean;
   savedCoordinate: number;
 }
-export interface ActiveHandleType {
-  points: Points;
+
+/** Represents an active handle with its directional points. */
+export interface TrueCropperActiveHandle {
+  points: TrueCropperPoints;
 }
 
-export type TrueCropperCoreCallbackEvent =
-  | TrueCropperCoreHandleStartEvent
-  | TrueCropperCoreHandleMoveEvent
-  | TrueCropperCoreHandleEndEvent
-  | TrueCropperCoreRegionMoveEvent
-  | TrueCropperCoreCreateNewBoxEvent;
-export type TrueCropperCoreCallbackEventFunction = ({
-  type,
-  data,
-}: TrueCropperCoreCallbackEvent) => boolean;
+/** A union type for all TrueCropper events. */
+export type TrueCropperEvent =
+  | TrueCropperHandleStartEvent
+  | TrueCropperHandleMoveEvent
+  | TrueCropperHandleEndEvent
+  | TrueCropperRegionMoveEvent
+  | TrueCropperNewBoxEvent;
 
-export enum Status {
-  "waiting" = "waiting",
-  "ready" = "ready",
-  "reloading" = "reloading",
-  "error" = "error",
+/** The event handler function type for TrueCropper events. */
+export type TrueCropperEventHandler = (event: TrueCropperEvent) => boolean;
+
+/* ────── Enums & Callback Collections ────── */
+
+/** The possible statuses of the TrueCropper. */
+export enum TrueCropperStatus {
+  Waiting = "waiting",
+  Ready = "ready",
+  Reloading = "reloading",
+  Error = "error",
 }
 
-export interface Icallback {
-  onInitialize?: CallbackOnCrop;
-  onCropStart?: CallbackOnCrop;
-  onCropMove?: CallbackOnCrop;
-  onCropEnd?: CallbackOnCrop;
-  onError?: CallbackOnError;
+/** Collection of optional callback handlers for TrueCropper events. */
+export interface TrueCropperCallbacks {
+  onInitialize?: TrueCropperCropCallback;
+  onCropStart?: TrueCropperCropCallback;
+  onCropMove?: TrueCropperCropCallback;
+  onCropEnd?: TrueCropperCropCallback;
+  onError?: TrueCropperErrorCallback;
 }
 
-export interface ContainerToMaxMinSize {
-  size: Size;
-  minSize?: Size;
-  maxSize?: Size;
+/* ────── Additional Data Structures ────── */
+
+/**
+ * Defines container size constraints along with its aspect ratio.
+ */
+export interface TrueCropperContainerSizeConstraints {
+  size: TrueCropperSize;
+  minSize?: TrueCropperSize;
+  maxSize?: TrueCropperSize;
   aspectRatio: number;
 }
 
-export interface IimageErrorData {
+/**
+ * Error data specific to image issues.
+ */
+export interface TrueCropperImageErrorData {
   target: string;
-  coordinates?: Coordinates;
-  targetSize: Size;
+  coordinates?: TrueCropperCoordinates;
+  targetSize: TrueCropperSize;
   source: string;
-  sourceSize: Size;
+  sourceSize: TrueCropperSize;
 }
 
-export interface Idd {
+/**
+ * Box data that may contain nullable values.
+ */
+export interface TrueCropperNullableBoxData {
   coordinates: { x: number | null; y: number | null };
   size: { width: number | null; height: number | null };
-  points: Points;
+  points: TrueCropperPoints;
 }
-export interface Idd2 {
-  coordinates: Coordinates;
-  size: Size;
-  points: Points;
-  isVerticalMovement: boolean;
-  isMultuAxis: boolean;
-}
+
 /**
- * Represents the initialization interface for Box.
- * @interface
+ * Data related to dragging or resizing operations.
  */
-export interface BoxInitInterface {
-  coordinates: Coordinates;
-  size: Size;
-  minSize: Size;
-  maxSize: Size;
-  imgProps: Size;
+export interface TrueCropperDragData {
+  coordinates: TrueCropperCoordinates;
+  size: TrueCropperSize;
+  points: TrueCropperPoints;
+  isVerticalMovement: boolean;
+  isMultiAxis: boolean;
+}
+
+/**
+ * Represents the initialization configuration for a crop box.
+ */
+export interface TrueCropperBoxInitConfig {
+  coordinates: TrueCropperCoordinates;
+  size: TrueCropperSize;
+  minSize: TrueCropperSize;
+  maxSize: TrueCropperSize;
+  imgProps: TrueCropperSize;
   aspectRatio: number;
+  epsilon: number;
 }

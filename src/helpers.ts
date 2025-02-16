@@ -1,28 +1,28 @@
 import { CONSTANTS } from "./constant";
 import { TrueCropperHtmlError, TrueCropperImageError } from "./errors";
 import {
-  ActiveHandleDataType,
-  Coordinates,
-  InitQuerySelectorOrHtmlElementType,
+  TrueCropperActiveHandleData,
+  TrueCropperCoordinates,
+  TrueCropperImageElementOrSelector,
 } from "./types";
 import {
-  BoxInitInterface,
-  ContainerToMaxMinSize,
-  Idd2,
-  Size,
-  SizeUnit,
-  SizeWithUnit,
-  StartSize,
+  TrueCropperBoxInitConfig,
+  TrueCropperContainerSizeConstraints,
+  TrueCropperDragData,
+  TrueCropperSize,
+  TrueCropperSizeUnit,
+  TrueCropperSizeWithUnit,
+  TrueCropperInitialSize,
 } from "./types";
 
 /**
  * Retrieves HTML elements based on the provided element query or type.
  *
- * @param {InitQuerySelectorOrHtmlElementType} element - The element query or type.
+ * @param {TrueCropperImageElementOrSelector} element - The element query or type.
  * @returns {[HTMLImageElement, HTMLDivElement]} The retrieved image element and its parent div.
  */
 export const getHTMLelements = (
-  element: InitQuerySelectorOrHtmlElementType,
+  element: TrueCropperImageElementOrSelector,
 ) => {
   let el = null;
   if (typeof element === "string") {
@@ -71,12 +71,12 @@ export const createDiv = (
 /**
  * Calculate point based on mouse position and active handle
  * @param {number} mouse - Current mouse position
- * @param {ActiveHandleDataType} handle - Active handle data
+ * @param {TrueCropperActiveHandleData} handle - Active handle data
  * @returns {Object} - Object containing flipped flag and data with values and new point
  */
 const calculatePointBasedOnMouse = (
   mousePosition: number,
-  activeHandle: ActiveHandleDataType,
+  activeHandle: TrueCropperActiveHandleData,
 ) => {
   // If handle is not active, return points
   if (activeHandle.savedCoordinate < 0) {
@@ -103,15 +103,15 @@ const calculatePointBasedOnMouse = (
 /**
  * Calculates the points based on the mouse coordinates and handles.
  *
- * @param {Coordinates} mouse - The mouse coordinates.
- * @param {ActiveHandleDataType} handleX - The handle for the X coordinate.
- * @param {ActiveHandleDataType} handleY - The handle for the Y coordinate.
+ * @param {TrueCropperCoordinates} mouse - The mouse coordinates.
+ * @param {TrueCropperActiveHandleData} handleX - The handle for the X coordinate.
+ * @param {TrueCropperActiveHandleData} handleY - The handle for the Y coordinate.
  * @returns {Object} The calculated points based on the mouse and handles.
  */
 export const calculatePointsBasedOnMouse = (
-  mouse: Coordinates,
-  handleX: ActiveHandleDataType,
-  handleY: ActiveHandleDataType,
+  mouse: TrueCropperCoordinates,
+  handleX: TrueCropperActiveHandleData,
+  handleY: TrueCropperActiveHandleData,
 ) => {
   const aX = calculatePointBasedOnMouse(mouse.x, handleX);
   const aY = calculatePointBasedOnMouse(mouse.y, handleY);
@@ -127,22 +127,22 @@ export const calculatePointsBasedOnMouse = (
 
 /**
  * Converts sizes from real or relative or percent units to real pixel values based on provided parameters.
- * @param {StartSize} start The starting size in real or relative or percent units.
- * @param {SizeWithUnit} min The minimum size in real or relative or percent units.
- * @param {SizeWithUnit} max The maximum size in real orrelative or percent units.
- * @param {Size} real The real image size in pixels. Need for percent values.
- * @param {Size} ratio The ratio of conversion from relative to real pixels.
+ * @param {TrueCropperInitialSize} start The starting size in real or relative or percent units.
+ * @param {TrueCropperSizeWithUnit} min The minimum size in real or relative or percent units.
+ * @param {TrueCropperSizeWithUnit} max The maximum size in real orrelative or percent units.
+ * @param {TrueCropperSize} real The real image size in pixels. Need for percent values.
+ * @param {TrueCropperSize} ratio The ratio of conversion from relative to real pixels.
  * @returns Object containing converted sizes.
  */
 export const convertToRealPx = (
-  start: StartSize,
-  min: SizeWithUnit,
-  max: SizeWithUnit,
-  real: Size,
-  ratio: Size,
+  start: TrueCropperInitialSize,
+  min: TrueCropperSizeWithUnit,
+  max: TrueCropperSizeWithUnit,
+  real: TrueCropperSize,
+  ratio: TrueCropperSize,
 ) => {
   // Function to convert a value from relative or percent units to real pixels
-  const toPx = (val: number, type: keyof Size, unit: SizeUnit) => {
+  const toPx = (val: number, type: keyof TrueCropperSize, unit: TrueCropperSizeUnit) => {
     if (unit === "relative") {
       return val * ratio[type];
     }
@@ -178,19 +178,20 @@ export const convertToRealPx = (
  * Processes the initial props for the TrueCropper instance.
  *
  * @param {ReturnType<typeof convertToRealPx>} data - The converted real pixel data.
- * @param {Size} imgProps - The image size.
+ * @param {TrueCropperSize} imgProps - The image size.
  * @param {number} aspectRatio - The aspect ratio.
  * @param {boolean} allowChangeStartProps - Flag indicating if start props can be changed.
  * @param {{ x: boolean; y: boolean }} centered - Flag indicating start props coordinates can be changed.
- * @returns {BoxInitInterface} The processed initial props.
+ * @returns {TrueCropperBoxInitConfig} The processed initial props.
  */
 export const processingInitialProps = (
   data: ReturnType<typeof convertToRealPx>,
-  imgProps: Size,
+  imgProps: TrueCropperSize,
   aspectRatio: number,
+  epsilon: number,
   allowChangeStartProps: boolean,
   centered: { x: boolean; y: boolean },
-): BoxInitInterface => {
+): TrueCropperBoxInitConfig => {
   const minSize = adjustSizeProps(
     data.minSize,
     { width: 1, height: 1 },
@@ -217,13 +218,13 @@ export const processingInitialProps = (
     size = tmp.size;
   }
 
-  return { coordinates, size, minSize, maxSize, imgProps, aspectRatio };
+  return { coordinates, size, minSize, maxSize, imgProps, aspectRatio, epsilon };
 };
 
 /**
  * Validates the image sizes based on various criteria.
  *
- * @param {BoxInitInterface} options - The box initialization interface.
+ * @param {TrueCropperBoxInitConfig} options - The box initialization interface.
  */
 export const validateImageSizes = ({
   coordinates,
@@ -231,10 +232,10 @@ export const validateImageSizes = ({
   maxSize,
   size,
   imgProps,
-}: BoxInitInterface) => {
+}: TrueCropperBoxInitConfig) => {
   const checkDimensions = (
-    first: Size,
-    second: Size,
+    first: TrueCropperSize,
+    second: TrueCropperSize,
     firstName: string,
     secondName: string,
   ) => {
@@ -267,15 +268,15 @@ export const validateImageSizes = ({
 /**
  * Converts the container size to the maximum and minimum size.
  *
- * @param {ContainerToMaxMinSize} options - The container size and constraints.
- * @returns {Size} The new size after applying maximum and minimum constraints.
+ * @param {TrueCropperContainerSizeConstraints} options - The container size and constraints.
+ * @returns {TrueCropperSize} The new size after applying maximum and minimum constraints.
  */
 export const containerToMaxMinSize = ({
   size,
   minSize,
   maxSize,
   aspectRatio,
-}: ContainerToMaxMinSize) => {
+}: TrueCropperContainerSizeConstraints) => {
   const newSize = { ...size };
   if (maxSize) {
     if (newSize.width > maxSize.width) {
@@ -317,13 +318,13 @@ export const containerToMaxMinSize = ({
  * @param {number} widthAdjustment The amount to adjust the width by.
  * @param {number} point The point to use in the adjustment.
  * @param {number} aspectRatio The aspect ratio to use in the adjustment.
- * @returns {Size} The adjusted size box.
+ * @returns {TrueCropperSize} The adjusted size box.
  */
 const adjustWidth = (
   widthAdjustment: number,
   point: number,
   aspectRatio: number,
-): Size => {
+): TrueCropperSize => {
   const newWidth = widthAdjustment * point;
   return { width: newWidth, height: newWidth / aspectRatio };
 };
@@ -339,29 +340,29 @@ const adjustHeight = (
   heightAdjustment: number,
   point: number,
   aspectRatio: number,
-): Size => {
+): TrueCropperSize => {
   const newHeight = heightAdjustment * point;
   return { width: newHeight * aspectRatio, height: newHeight };
 };
 
 /**
  * Adjusts a size box to match a specified aspect ratio.
- * @param {Idd2} data The data box containing the size, coordinates, and points.
- * @param {Size} maxSize The maximum size of the box.
+ * @param {TrueCropperDragData} data The data box containing the size, coordinates, and points.
+ * @param {TrueCropperSize} maxSize The maximum size of the box.
  * @param {number} aspectRatio The aspect ratio to adjust to.
  * @returns The adjusted size box.
  */
 export const adjustToAspectRatio = (
-  data: Idd2,
-  maxSize: Size,
+  data: TrueCropperDragData,
+  maxSize: TrueCropperSize,
   aspectRatio: number,
-): Size => {
+): TrueCropperSize => {
   let newSize = { ...data.size };
   if (aspectRatio === 0) {
     return newSize;
   }
 
-  const vertiacal = data.isMultuAxis
+  const vertiacal = data.isMultiAxis
     ? newSize.height * aspectRatio >= newSize.width
     : data.isVerticalMovement;
   const pointX = data.points.x === 1 || data.points.x === 0 ? 1 : 2;
@@ -412,16 +413,16 @@ export const adjustToAspectRatio = (
 /**
  * Adjusts the size properties by removing empty values and adjusting based on aspect ratio.
  *
- * @param {Size} sizeProps - The size properties to adjust.
- * @param {Size} defaultVal - The default size values.
+ * @param {TrueCropperSize} sizeProps - The size properties to adjust.
+ * @param {TrueCropperSize} defaultVal - The default size values.
  * @param {number} aspectRatio - The aspect ratio to consider.
- * @returns {Size} The adjusted size.
+ * @returns {TrueCropperSize} The adjusted size.
  */
 const adjustSizeProps = (
-  sizeProps: Size,
-  defaultVal: Size,
+  sizeProps: TrueCropperSize,
+  defaultVal: TrueCropperSize,
   aspectRatio: number,
-): Size => {
+): TrueCropperSize => {
   const size = { ...sizeProps };
   // Adjust size based on aspect ratio if necessary
   if (aspectRatio && !size.width && !size.height) {
@@ -446,14 +447,14 @@ const adjustSizeProps = (
 /**
  * Calculates the adjusted maximum size based on image size and aspect ratio.
  *
- * @param {Size} maxSizeProps - The maximum size properties.
- * @param {Size} image - The image size to consider.
+ * @param {TrueCropperSize} maxSizeProps - The maximum size properties.
+ * @param {TrueCropperSize} image - The image size to consider.
  * @param {number} aspectRatio - The aspect ratio to apply.
- * @returns {Size} The calculated maximum size.
+ * @returns {TrueCropperSize} The calculated maximum size.
  */
 const calculateAdjustedMaxSize = (
-  maxSizeProps: Size,
-  image: Size,
+  maxSizeProps: TrueCropperSize,
+  image: TrueCropperSize,
   aspectRatio: number,
 ) => {
   let maxSize = { ...maxSizeProps };
@@ -476,22 +477,22 @@ const calculateAdjustedMaxSize = (
 /**
  * Adjusts the start coordinates and size based on constraints and centering options.
  *
- * @param {Coordinates} coordinates - The initial coordinates.
- * @param {Size} startSize - The initial start size.
- * @param {Size} minSize - The minimum size constraints.
- * @param {Size} maxSize - The maximum size constraints.
- * @param {Size} image - The image size to consider.
+ * @param {TrueCropperCoordinates} coordinates - The initial coordinates.
+ * @param {TrueCropperSize} startSize - The initial start size.
+ * @param {TrueCropperSize} minSize - The minimum size constraints.
+ * @param {TrueCropperSize} maxSize - The maximum size constraints.
+ * @param {TrueCropperSize} image - The image size to consider.
  * @param {number} aspectRatio - The aspect ratio to apply.
  * @param {boolean} centeredX - Flag for centering horizontally.
  * @param {boolean} centeredY - Flag for centering vertically.
  * @returns {AdjustedStartProps} The adjusted start coordinates and size.
  */
 const adjustStartProps = (
-  coordinates: Coordinates,
-  startSize: Size,
-  minSize: Size,
-  maxSize: Size,
-  image: Size,
+  coordinates: TrueCropperCoordinates,
+  startSize: TrueCropperSize,
+  minSize: TrueCropperSize,
+  maxSize: TrueCropperSize,
+  image: TrueCropperSize,
   aspectRatio: number,
   centeredX: boolean,
   centeredY: boolean,

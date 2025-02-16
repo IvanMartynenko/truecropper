@@ -9,19 +9,20 @@ import NewSelection from "./HTMLelements/newSelection";
 import Selection from "./HTMLelements/selection";
 import { calculatePointsBasedOnMouse, getHTMLelements } from "./helpers";
 import {
-  BoxProps,
-  Coordinates,
-  TrueCropperCoreCallbackEvent,
-  TrueCropperCoreCreateNewBoxEvent,
-  TrueCropperCoreHandleMoveEvent,
-  TrueCropperCoreHandleStartEvent,
-  TrueCropperCoreRegionMoveEvent,
-  Icallback,
-  OptionsPropsValuesType,
-  Points,
-  Size,
-  SizeUnit,
-  Status,
+  TrueCropperBoxProps,
+  TrueCropperCoordinates,
+  TrueCropperEvent,
+  TrueCropperNewBoxEvent,
+  TrueCropperHandleMoveEvent,
+  TrueCropperHandleStartEvent,
+  TrueCropperRegionMoveEvent,
+  TrueCropperCallbacks,
+  TrueCropperBoxInitConfig,
+  TrueCropperPoints,
+  TrueCropperSize,
+  TrueCropperSizeUnit,
+  TrueCropperStatus,
+  TrueCropperOptions
 } from "./types";
 import { parseOptions, prepareOptions } from "./options";
 import {
@@ -71,12 +72,12 @@ export default class TrueCropper {
   private ratio = defaultSize;
   private firstInit = true;
   private isDomCreated = false;
-  public status = Status.waiting;
+  public status = TrueCropperStatus.Waiting;
   public eventBus = this.event.bind(this);
   private observer!: ResizeObserver;
   private preventDoubleLoad?: string;
 
-  private callbacks: Icallback = {
+  private callbacks: TrueCropperCallbacks = {
     onInitialize: undefined,
     onCropStart: undefined,
     onCropMove: undefined,
@@ -86,7 +87,7 @@ export default class TrueCropper {
 
   public constructor(
     element: HTMLImageElement | string,
-    optionsProps?: Partial<OptionsPropsValuesType>,
+    optionsProps?: Partial<TrueCropperOptions>,
   ) {
     try {
       this.parseCallbackFunctions(optionsProps);
@@ -97,7 +98,7 @@ export default class TrueCropper {
       } else {
         this.replaceDOM = true;
       }
-      this.changeStatus(Status.waiting);
+      this.changeStatus(TrueCropperStatus.Waiting);
 
       // Parse options
       const rawOptionsData = parseOptions(this.htmlImg.dataset, optionsProps);
@@ -200,10 +201,21 @@ export default class TrueCropper {
 
   /**
    * Moves the crop region to a specified coordinate.
-   * @param {Coordinates} coordinates
+   * @param {TrueCropperCoordinates} coordinates
    */
-  public moveTo(coordinates: Coordinates) {
-    this.box.move(coordinates);
+  public moveTo(coordinates: TrueCropperCoordinates, mode: TrueCropperSizeUnit | undefined = undefined) {
+    if (typeof coordinates !== "object") {
+      return;
+    }
+    if (!coordinates
+      || typeof coordinates.x !== "number"
+      || typeof coordinates.y !== "number") {
+      return;
+    }
+
+    const realCoordinates = this.coordinatesToReal(coordinates, mode);
+
+    this.box.move(realCoordinates);
     this.redraw();
 
     // Call the callback
@@ -212,11 +224,30 @@ export default class TrueCropper {
 
   /**
    * Resizes the crop region to a specified width and height.
-   * @param {Size} size
-   * @param {Points} points
+   * @param {SiTrueCropperSizeze} size
+   * @param {TrueCropperPoints} points
    */
-  public resizeTo(size: Size, points: Points = { x: 0.5, y: 0.5 }) {
-    this.box.resize(size, points);
+  public resizeTo(size: TrueCropperSize, points: TrueCropperPoints = { x: 0.5, y: 0.5 }, mode: TrueCropperSizeUnit | undefined = undefined) {
+    if (typeof size !== "object") {
+      return { ok: false, message: "Size must be provided as an Size object." };
+    }
+    if (!size
+      || typeof size.width !== "number"
+      || typeof size.height !== "number") {
+      return { ok: false, message: "Size object must have numeric 'width' and 'height' properties." };
+    }
+    if (typeof points !== "object") {
+      return { ok: false, message: "Points must be provided as an Points object." };
+    }
+    if (!points
+      || typeof points.x !== "number"
+      || typeof points.y !== "number") {
+      return { ok: false, message: "Points object must have numeric 'x' and 'y' properties." };
+    }
+
+    const realSize = this.sizeToReal(size, mode);
+
+    this.box.resize(realSize, points);
     this.redraw();
 
     // Call the callback
@@ -226,34 +257,55 @@ export default class TrueCropper {
   /**
    * Scale the crop region by a factor.
    * @param {Number} factor
-   * @param {Points} points
+   * @param {TrueCropperPoints} points
    */
-  public scaleBy(factor: number, points: Points = { x: 0.5, y: 0.5 }) {
-    this.box.scale(factor, points);
-    this.redraw();
+  public scaleBy(factor: number, points: TrueCropperPoints = { x: 0.5, y: 0.5 }) {
+    if (typeof factor !== "number") {
+      return { ok: false, message: "factor must be provided as numeric." };
+    }
+    const status = this.box.scale(factor, points);
+    if (status.ok) {
+      this.redraw();
 
-    // Call the callback
-    this.onCropEndCallback();
+      // Call the callback
+      this.onCropEndCallback();
+    }
+    return status;
   }
 
   /**
    * Sets the value of a box.
-   * @param {BoxProps} box - The box object containing properties to set.
+   * @param {TrueCropperBoxProps} box - The box object containing properties to set.
    * @public
    */
-  public setValue(box: BoxProps) {
-    this.box.setValue(box);
+  public setValue(box: TrueCropperBoxProps, mode: TrueCropperSizeUnit | undefined = undefined) {
+    if (typeof box !== "object") {
+      return { ok: false, message: "Size must be provided as an BoxProps object." };
+    }
+    if (!box
+      || typeof box.x !== "number"
+      || typeof box.y !== "number"
+      || typeof box.width !== "number"
+      || typeof box.height !== "number") {
+        return { ok: false, message: "BoxProps object must have numeric 'x', 'y', 'width' and 'height' properties." };
+    }
+    const realSize = this.boxToReal(box, mode);
+    const status = this.box.setValue(realSize);
 
-    // Call the callback
-    this.onCropEndCallback();
+    if (status.ok) {
+      this.redraw();
+      // Call the callback
+      this.onCropEndCallback();
+    }
+    return status;
   }
 
   /**
    * Get the value of the crop region.
-   * @param {SizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
+   * @param {TrueCropperSizeUnit | undefined} mode - The mode of return value type. If null, defaults to the return mode set in returnMode options.
    * @returns {number} - The value of the crop region.
    */
-  public getValue(mode: SizeUnit | undefined = undefined) {
+  public getValue(mode: TrueCropperSizeUnit | undefined = undefined) {
     const calculationMode = mode || this.options.returnMode;
 
     const notRoundedValues = () => {
@@ -278,7 +330,7 @@ export default class TrueCropper {
 
   /**
    * Retrieves the image properties.
-   * @returns {real: Size, relative: Size} An object containing the real and relative properties.
+   * @returns {real: TrueCropperSize, relative: TrueCropperSize} An object containing the real and relative properties.
    * @public
    */
   public getImageProps() {
@@ -287,7 +339,7 @@ export default class TrueCropper {
 
   /**
    * Retrieves the status of the instance.
-   * @returns {Status} The status of the instance.
+   * @returns {TrueCropperStatus} The status of the instance.
    */
   public getStatus() {
     return this.status;
@@ -344,7 +396,7 @@ export default class TrueCropper {
       | TrueCropperOptionsError,
   ) {
     // Change dataset properties status to error
-    this.changeStatus(Status.error);
+    this.changeStatus(TrueCropperStatus.Error);
     const value = {
       name: error.name,
       message: error.message,
@@ -400,7 +452,7 @@ export default class TrueCropper {
         this.preventDoubleLoad = undefined;
       }
       this.changeStatus(
-        this.status === Status.waiting ? Status.waiting : Status.reloading,
+        this.status === TrueCropperStatus.Waiting ? TrueCropperStatus.Waiting : TrueCropperStatus.Reloading,
       );
       this.observer.unobserve(this.htmlImg);
       this.initialize();
@@ -414,7 +466,7 @@ export default class TrueCropper {
       this.createNewBox();
       this.onInitializeCallback();
       this.observer.observe(this.htmlImg);
-      this.changeStatus(Status.ready);
+      this.changeStatus(TrueCropperStatus.Ready);
       this.onCropEndCallback();
     } catch (error) {
       if (error instanceof TrueCropperImageError) {
@@ -498,6 +550,7 @@ export default class TrueCropper {
       realData,
       this.real,
       this.options.aspectRatio,
+      this.options.epsilon,
       allowChange,
       centered,
     );
@@ -521,7 +574,7 @@ export default class TrueCropper {
     };
   }
 
-  private changeStatus(status: Status) {
+  private changeStatus(status: TrueCropperStatus) {
     this.status = status;
     if (this.htmlImg) {
       this.setDataset(CONSTANTS.valueStatus, status);
@@ -539,7 +592,7 @@ export default class TrueCropper {
     this.handles.transform(box);
   }
 
-  private event({ type, data }: TrueCropperCoreCallbackEvent) {
+  private event({ type, data }: TrueCropperEvent) {
     switch (type) {
       case "handlestart":
         this.onHandleMoveStart(data);
@@ -570,7 +623,7 @@ export default class TrueCropper {
     size,
     leftMovable,
     topMovable,
-  }: TrueCropperCoreCreateNewBoxEvent["data"]) {
+  }: TrueCropperNewBoxEvent["data"]) {
     // Get handle data based on movable types
     const handleData = this.handles
       .handleByMovableType(leftMovable, topMovable)
@@ -604,7 +657,7 @@ export default class TrueCropper {
   /**
    * Executes when user begins dragging a handle.
    */
-  private onHandleMoveStart(data: TrueCropperCoreHandleStartEvent["data"]) {
+  private onHandleMoveStart(data: TrueCropperHandleStartEvent["data"]) {
     const { x, y } = this.box.getOppositeCornerCoordinates(data.points);
     this.activeHandle = {
       x: {
@@ -624,7 +677,7 @@ export default class TrueCropper {
   /**
    * Executes on handle move. Main logic to manage the movement of handles.
    */
-  private onHandleMoveMoving(absMouse: TrueCropperCoreHandleMoveEvent["data"]) {
+  private onHandleMoveMoving(absMouse: TrueCropperHandleMoveEvent["data"]) {
     // Calculate mouse's position in relative to the container
     const coordinates = this.mouseCoordinates(absMouse);
 
@@ -661,9 +714,9 @@ export default class TrueCropper {
 
   /**
    * Executes when user starts moving the crop region.
-   * @param {TrueCropperCoreRegionMoveEvent["data"]} data - contains the raw mouseX, mouseY coordinate
+   * @param {TrueCropperRegionMoveEvent["data"]} data - contains the raw mouseX, mouseY coordinate
    */
-  private onRegionMoveStart(absMouse: TrueCropperCoreRegionMoveEvent["data"]) {
+  private onRegionMoveStart(absMouse: TrueCropperRegionMoveEvent["data"]) {
     const { x, y } = this.mouseCoordinates(absMouse);
     const box = this.box.getCoourdinates();
 
@@ -676,7 +729,7 @@ export default class TrueCropper {
   /**
    * Executes when user moves the crop region.
    */
-  private onRegionMoveMoving(absMouse: TrueCropperCoreRegionMoveEvent["data"]) {
+  private onRegionMoveMoving(absMouse: TrueCropperRegionMoveEvent["data"]) {
     const { offsetX, offsetY } = this.currentMove;
 
     // Calculate mouse's position in relative to the container
@@ -723,7 +776,7 @@ export default class TrueCropper {
 
   // to helpers
   private parseCallbackFunctions(
-    optionsProps?: Partial<OptionsPropsValuesType>,
+    optionsProps?: Partial<TrueCropperOptions>,
   ) {
     if (!optionsProps) {
       return;
@@ -757,11 +810,121 @@ export default class TrueCropper {
     }
   }
 
-  private setDatasetCropValues(value?: BoxProps) {
+  private setDatasetCropValues(value?: TrueCropperBoxProps) {
     const val = value || this.getValue();
     this.setDataset(CONSTANTS.valueX, val.x);
     this.setDataset(CONSTANTS.valueY, val.y);
     this.setDataset(CONSTANTS.valueWidth, val.width);
     this.setDataset(CONSTANTS.valueHeight, val.height);
+  }
+
+  /**
+   * Converts a single numeric value from a given mode ("relative", "percent", or "real")
+   * into its corresponding real value.
+   *
+   * @param value - The original value to convert.
+   * @param ratio - The reference ratio (e.g., this.ratio.width or this.ratio.height) used for relative conversion.
+   * @param total - The total dimension (from the image size) used for percent conversion.
+   * @param mode - The conversion mode.
+   * @returns The converted value.
+   */
+  private getConvertedValue(value: number, ratio: number, total: number, mode: TrueCropperSizeUnit): number {
+    if (mode === "relative") {
+      return value / ratio;
+    }
+    if (mode === "percent") {
+      return (total * value) / 100;
+    }
+    // For "real" or any unrecognized mode, return the original value.
+    return value;
+  }
+
+  /**
+   * Converts coordinate values (x and y) into their real equivalents based on the specified mode.
+   *
+   * @param coordinates - The coordinates to convert.
+   * @param mode - The conversion mode ("relative", "percent", or "real").
+   *               Defaults to `this.options.returnMode` if not provided.
+   * @returns The converted coordinates.
+   */
+  private coordinatesToReal(coordinates: TrueCropperCoordinates, mode: TrueCropperSizeUnit | undefined = undefined): TrueCropperCoordinates {
+    const calculationMode = mode || this.options.returnMode;
+
+    // If the mode is "real", return the original coordinates.
+    if (calculationMode === "real") {
+      return { ...coordinates };
+    }
+
+    const imgSize = this.box.getBoxSize();
+    return {
+      x: this.getConvertedValue(
+        coordinates.x,
+        this.ratio.width,
+        imgSize.width,
+        calculationMode
+      ),
+      y: this.getConvertedValue(
+        coordinates.y,
+        this.ratio.height,
+        imgSize.height,
+        calculationMode
+      ),
+    };
+  }
+
+  /**
+   * Converts size values (width and height) into their real equivalents based on the specified mode.
+   *
+   * @param size - The size object to convert.
+   * @param mode - The conversion mode ("relative", "percent", or "real").
+   *               Defaults to `this.options.returnMode` if not provided.
+   * @returns The converted size object.
+   */
+  private sizeToReal(size: TrueCropperSize, mode: TrueCropperSizeUnit | undefined = undefined): TrueCropperSize {
+    const calculationMode = mode || this.options.returnMode;
+
+    // If the mode is "real", return the original size.
+    if (calculationMode === "real") {
+      return { ...size };
+    }
+
+    const imgSize = this.box.getBoxSize();
+    return {
+      width: this.getConvertedValue(
+        size.width,
+        this.ratio.width,
+        imgSize.width,
+        calculationMode
+      ),
+      height: this.getConvertedValue(
+        size.height,
+        this.ratio.height,
+        imgSize.height,
+        calculationMode
+      ),
+    };
+  }
+
+  /**
+   * Converts a box's properties (both position and size) into their real equivalents
+   * based on the specified mode.
+   *
+   * @param box - The box properties to convert.
+   * @param mode - The conversion mode ("relative", "percent", or "real").
+   *               Defaults to `this.options.returnMode` if not provided.
+   * @returns The converted box properties.
+   */
+  private boxToReal(box: TrueCropperBoxProps, mode: TrueCropperSizeUnit | undefined = undefined): TrueCropperBoxProps {
+    const calculationMode = mode || this.options.returnMode;
+
+    // If the mode is "real", no conversion is necessary.
+    if (calculationMode === "real") {
+      return box;
+    }
+
+    return {
+      ...this.coordinatesToReal({ x: box.x, y: box.y }, calculationMode),
+      ...this.sizeToReal({ width: box.width, height: box.height }, calculationMode),
+    };
   }
 }

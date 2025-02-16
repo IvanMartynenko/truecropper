@@ -12,4 +12,5 @@ export const CONSTANTS = {
   valueWidth: `${BASE_CLASSNAME}Width`,
   valueHeight: `${BASE_CLASSNAME}Height`,
   valueStatus: `${BASE_CLASSNAME}Status`,
+  epsilon: 0.05,
 } as const;

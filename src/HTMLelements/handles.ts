@@ -3,7 +3,7 @@
  */
 
 import { createDiv } from "../helpers";
-import { BoxProps, TrueCropperCoreCallbackEventFunction } from "../types";
+import { TrueCropperBoxProps, TrueCropperEventHandler } from "../types";
 import Handle from "./handle";
 
 /**
@@ -35,7 +35,7 @@ export default class Handles {
   public constructor(
     parent: HTMLDivElement,
     className: string,
-    eventBus: TrueCropperCoreCallbackEventFunction,
+    eventBus: TrueCropperEventHandler,
     enable: boolean,
     handleClassName: string,
   ) {
@@ -71,7 +71,7 @@ export default class Handles {
     this.el.remove();
   }
 
-  public transform(box: BoxProps) {
+  public transform(box: TrueCropperBoxProps) {
     for (const handle of this.handles) {
       handle.transform(box);
     }

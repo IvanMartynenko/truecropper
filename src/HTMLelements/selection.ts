@@ -3,10 +3,10 @@
  */
 
 import { createDiv } from "../helpers";
-import { BoxProps, TrueCropperCoreCallbackEventFunction } from "../types";
+import { TrueCropperBoxProps, TrueCropperEventHandler } from "../types";
 
 export default class Selection {
-  private eventBus: TrueCropperCoreCallbackEventFunction;
+  private eventBus: TrueCropperEventHandler;
   private el: HTMLDivElement;
   private enable: boolean;
   private listener?: (e: MouseEvent) => void;
@@ -14,7 +14,7 @@ export default class Selection {
   public constructor(
     parent: HTMLDivElement,
     className: string,
-    eventBus: TrueCropperCoreCallbackEventFunction,
+    eventBus: TrueCropperEventHandler,
     enable: boolean,
   ) {
     this.eventBus = eventBus;
@@ -31,7 +31,7 @@ export default class Selection {
     }
   }
 
-  public transform(box: BoxProps) {
+  public transform(box: TrueCropperBoxProps) {
     // Calculate handle position
     this.el.style.transform = `translate(${box.x}px, ${box.y}px)`;
     this.el.style.width = `${box.width}px`;

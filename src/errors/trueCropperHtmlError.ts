@@ -1,4 +1,4 @@
-import { CallbackErrorData } from "types";
+import { TrueCropperErrorData } from "types";
 
 const errorMessage = {
   elementNotFound: { text: "Unable to find element", id: 0 },
@@ -7,7 +7,7 @@ const errorMessage = {
 };
 
 export class TrueCropperHtmlError extends Error {
-  public data: CallbackErrorData;
+  public data: TrueCropperErrorData;
   public messageId: number;
   public constructor(key: keyof typeof errorMessage) {
     const message = errorMessage[key];

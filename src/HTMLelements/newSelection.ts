@@ -3,10 +3,10 @@
  */
 
 import { createDiv } from "../helpers";
-import { TrueCropperCoreCallbackEventFunction } from "../types";
+import { TrueCropperEventHandler } from "../types";
 
 export default class NewSelection {
-  private eventBus: TrueCropperCoreCallbackEventFunction;
+  private eventBus: TrueCropperEventHandler;
   private el: HTMLDivElement;
   private startMouse = { mouseX: 0, mouseY: 0 };
   private newBoxCreated: boolean = false;
@@ -18,7 +18,7 @@ export default class NewSelection {
   public constructor(
     parent: HTMLDivElement,
     className: string,
-    eventBus: TrueCropperCoreCallbackEventFunction,
+    eventBus: TrueCropperEventHandler,
     enable: boolean,
   ) {
     this.eventBus = eventBus;

@@ -1,11 +1,11 @@
-import { CallbackErrorData, IimageErrorData } from "../types";
+import { TrueCropperErrorData, TrueCropperImageErrorData } from "../types";
 
 export class TrueCropperImageError extends Error {
-  public data: CallbackErrorData;
+  public data: TrueCropperErrorData;
   public messageId: number;
   public constructor(
     message: string,
-    data: IimageErrorData,
+    data: TrueCropperImageErrorData,
     messageId: number,
   ) {
     super(message);

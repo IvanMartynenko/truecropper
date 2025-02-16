@@ -1,11 +1,11 @@
-import { CallbackErrorData } from "types";
+import { TrueCropperErrorData } from "types";
 
 export class TrueCropperOptionsError extends Error {
-  public data: CallbackErrorData;
+  public data: TrueCropperErrorData;
   public messageId: number;
   public constructor(
     message: string,
-    data: CallbackErrorData,
+    data: TrueCropperErrorData,
     messageId: number = 0,
   ) {
     super(message);

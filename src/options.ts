@@ -3,11 +3,11 @@
  */
 
 // Tolerance value for floating-point comparison
-const EPSILON = 0.0001;
+// const EPSILON = 0.05;
 
 import { CONSTANTS } from "./constant";
 import { TrueCropperOptionsError } from "./errors";
-import { OptionsPropsValuesType, SIZE_UNIT, SizeUnit } from "./types";
+import { TrueCropperOptions, TRUECROPPER_SIZE_UNITS, TrueCropperSizeUnit } from "./types";
 
 const PREFIX = CONSTANTS.base;
 
@@ -82,34 +82,34 @@ function isBoolean(name: string, val: unknown, defaultVal: boolean) {
  * Checks if a value is a valid SizeUnit.
  * @param {string} name - The name of the value being checked.
  * @param {unknown} val - The value to check.
- * @param {SizeUnit} defaultValue - The default value to return if val is null or undefined.
- * @returns {SizeUnit} The valid SizeUnit or the default value.
+ * @param {TrueCropperSizeUnit} defaultValue - The default value to return if val is null or undefined.
+ * @returns {TrueCropperSizeUnit} The valid SizeUnit or the default value.
  * @throws {TrueCropperOptionsError} if the value is not a valid SizeUnit.
  */
 function isSizeUnit(
   name: string,
   val: unknown,
-  defaultValue: SizeUnit,
-): SizeUnit {
+  defaultValue: TrueCropperSizeUnit,
+): TrueCropperSizeUnit {
   if (isNil(val)) {
     return defaultValue;
   }
-  if (typeof val !== "string" || !SIZE_UNIT.includes(val as SizeUnit)) {
+  if (typeof val !== "string" || !TRUECROPPER_SIZE_UNITS.includes(val as TrueCropperSizeUnit)) {
     throw TrueCropperOptionsError.new(name, "SizeUnit");
   }
-  return val as SizeUnit;
+  return val as TrueCropperSizeUnit;
 }
 
 /**
  * Parses the options for the TrueCropper instance.
  * @param {DOMStringMap} dataset - The dataset of the TrueCropper container element.
- * @param {Partial<OptionsPropsValuesType> | undefined} options - The options object passed to the TrueCropper constructor.
- * @returns {OptionsPropsValuesType} The parsed options object.
+ * @param {Partial<TrueCropperOptions> | undefined} options - The options object passed to the TrueCropper constructor.
+ * @returns {TrueCropperOptions} The parsed options object.
  * @throws {TrueCropperOptionsError} if the options object is not of type 'object'.
  */
 export const parseOptions = (
   dataset: DOMStringMap,
-  options: Partial<OptionsPropsValuesType> | undefined,
+  options: Partial<TrueCropperOptions> | undefined,
 ) => {
   const opts = options || {};
   if (typeof opts !== "object" || opts === null) {
@@ -161,6 +161,7 @@ export const parseOptions = (
 
   return {
     aspectRatio: getValue("aspectRatio", opts.aspectRatio),
+    epsilon: getValue("epsilon", opts.epsilon),
     allowFlip: getValue("allowFlip", opts.allowFlip),
     allowNewSelection: getValue("allowNewSelection", opts.allowNewSelection),
     allowMove: getValue("allowMove", opts.allowMove),
@@ -211,6 +212,7 @@ const checkAspectRatio = (a: number, b: number, epsilon: number) =>
  */
 export const prepareOptions = (options: ReturnType<typeof parseOptions>) => {
   const aspectRatio = isNumber("aspectRatio", options.aspectRatio, 0);
+  const epsilon = isNumber("epsilon", options.epsilon, CONSTANTS.epsilon);
   const minSize = {
     width: isNumber("minSizeWidth", options.minSize.width, 0),
     height: isNumber("minSizeHeight", options.minSize.height, 0),
@@ -249,41 +251,42 @@ export const prepareOptions = (options: ReturnType<typeof parseOptions>) => {
   if (aspectRatio) {
     if (minSize.width && minSize.height) {
       const calculatedAspectRatio = minSize.width / minSize.height;
-      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
+      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, epsilon)) {
         throw TrueCropperOptionsError.aspectRatio(
           "minimum",
           calculatedAspectRatio,
           aspectRatio,
-          EPSILON,
+          epsilon,
         );
       }
     }
-    // if (firstInitSize.width && firstInitSize.height) {
-    //   const calculatedAspectRatio = firstInitSize.width / firstInitSize.height;
-    //   if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
-    //     throw TrueCropperOptionsError.aspectRatio(
-    //       "startSize",
-    //       calculatedAspectRatio,
-    //       aspectRatio,
-    //       EPSILON,
-    //     );
-    //   }
-    // }
-    // if (startSize.width && startSize.height) {
-    //   const calculatedAspectRatio = startSize.width / startSize.height;
-    //   if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, EPSILON)) {
-    //     throw TrueCropperOptionsError.aspectRatio(
-    //       "defaultSize",
-    //       calculatedAspectRatio,
-    //       aspectRatio,
-    //       EPSILON,
-    //     );
-    //   }
-    // }
+    if (firstInitSize.width && firstInitSize.height) {
+      const calculatedAspectRatio = firstInitSize.width / firstInitSize.height;
+      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, epsilon)) {
+        throw TrueCropperOptionsError.aspectRatio(
+          "startSize",
+          calculatedAspectRatio,
+          aspectRatio,
+          epsilon,
+        );
+      }
+    }
+    if (startSize.width && startSize.height) {
+      const calculatedAspectRatio = startSize.width / startSize.height;
+      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, epsilon)) {
+        throw TrueCropperOptionsError.aspectRatio(
+          "defaultSize",
+          calculatedAspectRatio,
+          aspectRatio,
+          epsilon,
+        );
+      }
+    }
   }
 
   return {
     aspectRatio,
+    epsilon,
     allowFlip: isBoolean("allowFlip", options.allowFlip, true),
     allowNewSelection: isBoolean(
       "allowNewSelection",
