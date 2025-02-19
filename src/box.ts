@@ -51,24 +51,24 @@ export default class Box {
    */
   public setValue(box: TrueCropperBoxProps) {
     if (box.width < this.minSize.width || box.height < this.minSize.height) {
-      return { ok: false, message: '' };
+      return { ok: false, message: 'Crop region is smaller than the minimum allowed size.' };
     }
     if (box.width > this.maxSize.width || box.height > this.maxSize.height) {
-      return { ok: false, message: '' };
+      return { ok: false, message: 'Crop region exceeds the maximum allowed size.' };
     }
     if (this.aspectRatio && box.width / box.height - this.aspectRatio > this.epsilon) {
-      return { ok: false, message: '' };
+      return { ok: false, message: 'Crop region does not match the required aspect ratio.' };
     }
     if (box.x < 0 || box.x > this.imgSize.width || box.y < 0 || box.y > this.imgSize.height) {
-      return { ok: false, message: '' };
+      return { ok: false, message: 'Crop region is positioned outside the image boundaries.' };
     }
     if (box.x + box.width > this.imgSize.width || box.y + box.height > this.imgSize.height) {
-      return { ok: false, message: '' };
+      return { ok: false, message: 'Crop region extends beyond the image boundaries.' };
     }
 
     this.coordinates = { x: box.x, y: box.y };
     this.size = { width: box.width, height: box.height };
-    return { ok: true, message: '' };
+    return { ok: true, message: 'success' };
   }
 
   /**
@@ -96,7 +96,7 @@ export default class Box {
    */
   public resize(size: TrueCropperSize, points: TrueCropperPoints) {
     if (points.x < 0 || points.x > 1 || points.y < 0 || points.y > 1) {
-      return { ok: false, message: '' };
+      return { ok: false, message: 'Point coordinates must be within the range of 0 to 1.' };
     }
     const fromX = this.coordinates.x + this.size.width * points.x;
     const fromY = this.coordinates.y + this.size.height * points.y;
@@ -213,12 +213,20 @@ export default class Box {
       return false;
     }
 
-    this.size = this.adjustAndCalculateSize(data);
-    this.coordinates = this.adjustAndCalculateCoordinate(
+    const size = this.adjustAndCalculateSize(data);
+    const coordinates = this.adjustAndCalculateCoordinate(
       data.coordinates,
-      this.size,
+      size,
       data.points,
     );
+
+    // need for allowFlip combination with minSize
+    if (coordinates.x < 0 || coordinates.x + size.width > this.imgSize.width || coordinates.y < 0 || coordinates.y + size.height > this.imgSize.height) {
+      return false;
+    }
+
+    this.size = size;
+    this.coordinates = coordinates;
 
     return true;
   }

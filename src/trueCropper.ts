@@ -80,7 +80,7 @@ export default class TrueCropper {
   private callbacks: TrueCropperCallbacks = {
     onInitialize: undefined,
     onCropStart: undefined,
-    onCropMove: undefined,
+    onCropChange: undefined,
     onCropEnd: undefined,
     onError: undefined,
   };
@@ -366,9 +366,9 @@ export default class TrueCropper {
   /**
    * Handles the callback when cropping is in progress.
    */
-  protected onCropMoveCallback() {
-    if (this.callbacks.onCropMove) {
-      this.callbacks.onCropMove(this, this.getValue());
+  protected onCropChangeCallback() {
+    if (this.callbacks.onCropChange) {
+      this.callbacks.onCropChange(this, this.getValue());
     }
   }
 
@@ -703,7 +703,7 @@ export default class TrueCropper {
     }
 
     // Trigger callback
-    this.onCropMoveCallback();
+    this.onCropChangeCallback();
   }
   /**
    *  Executes when the handle move ends.
@@ -740,7 +740,7 @@ export default class TrueCropper {
     this.redraw();
 
     // Trigger callback
-    this.onCropMoveCallback();
+    this.onCropChangeCallback();
   }
 
   /**
@@ -797,10 +797,10 @@ export default class TrueCropper {
       this.callbacks.onCropStart = optionsProps.onCropStart;
     }
     if (
-      optionsProps.onCropMove &&
-      typeof optionsProps.onCropMove === "function"
+      optionsProps.onCropChange &&
+      typeof optionsProps.onCropChange === "function"
     ) {
-      this.callbacks.onCropMove = optionsProps.onCropMove;
+      this.callbacks.onCropChange = optionsProps.onCropChange;
     }
     if (
       optionsProps.onCropEnd &&

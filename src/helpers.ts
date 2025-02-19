@@ -349,6 +349,7 @@ const adjustHeight = (
  * Adjusts a size box to match a specified aspect ratio.
  * @param {TrueCropperDragData} data The data box containing the size, coordinates, and points.
  * @param {TrueCropperSize} maxSize The maximum size of the box.
+ * @param {TrueCropperSize} minSize
  * @param {number} aspectRatio The aspect ratio to adjust to.
  * @returns The adjusted size box.
  */
@@ -368,9 +369,11 @@ export const adjustToAspectRatio = (
   const pointX = data.points.x === 1 || data.points.x === 0 ? 1 : 2;
   const pointY = data.points.y === 1 || data.points.y === 0 ? 1 : 2;
   if (vertiacal) {
-    newSize = { width: newSize.height * aspectRatio, height: newSize.height };
+    const height = newSize.height;
+    newSize = { width: height * aspectRatio, height: height };
   } else {
-    newSize = { width: newSize.width, height: newSize.width / aspectRatio };
+    const width = newSize.width;
+    newSize = { width: width, height: width / aspectRatio };
   }
 
   // Check if the coordinates do not exceed the image boundaries in width

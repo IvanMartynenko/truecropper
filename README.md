@@ -279,6 +279,8 @@ var ratio = cropInstance.getValue("percent");
 // value = {x: 10, y: 30: width: 57, height: 57}
 ```
 
+### getImagePreview()
+
 #### getImageProps()
 
 Return the image props in format: `{ real: { width, height }, relative: { width, height } }`. If status is not `ready` return zero or previus image value on width and height props.
@@ -373,3 +375,18 @@ List of possible errors:
   - message: `The minSize (${width}x${height}) exceeds the ${source} (${source.width}x${source.height})`
   - messageId: 7
   - data: `{ target: "minSize", targetSize: { width, height }, source: "imageSize|maxSize|startSize", sourceSize: { width, height } }`
+- The height is present, but width is null
+  - name: `TrueCropperOptionsError`
+  - message: `The width of (${name}) is null`
+  - messageId: 8
+  - data: `{ name }`
+- The width is present, but height is null
+  - name: `TrueCropperOptionsError`
+  - message: `The height of (${name}) is null`
+  - messageId: 9
+  - data: `{ name }`
+- The percent values > 100
+  - name: `TrueCropperOptionsError`
+  - message: `The percent values of (${name}) > 100`
+  - messageId: 10
+  - data: `{ name }`

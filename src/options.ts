@@ -43,6 +43,7 @@ function isNumber(
   val: unknown,
   defaultValue: number,
   allowZero: boolean = false,
+  allowFractional: boolean = false,
 ) {
   if (isNil(val)) {
     return defaultValue;
@@ -55,6 +56,9 @@ function isNumber(
   }
   if (allowZero ? val < 0 : val <= 0) {
     throw TrueCropperOptionsError.new(name, "positive");
+  }
+  if (!allowFractional && val > 0 && val < 1) {
+    throw TrueCropperOptionsError.new(name, "fractional");
   }
 
   return val;
@@ -159,7 +163,7 @@ export const parseOptions = (
     return value;
   };
 
-  return {
+  const returnValue = {
     aspectRatio: getValue("aspectRatio", opts.aspectRatio),
     epsilon: getValue("epsilon", opts.epsilon),
     allowFlip: getValue("allowFlip", opts.allowFlip),
@@ -192,6 +196,10 @@ export const parseOptions = (
       unit: getValue("defaultSizeUnit", opts.defaultSize?.unit),
     },
   };
+  if (isNil(returnValue.startSize.x) && isNil(returnValue.startSize.y) && isNil(returnValue.startSize.width) && isNil(returnValue.startSize.height)) {
+    returnValue.startSize = returnValue.defaultSize;
+  }
+  return returnValue;
 };
 
 /**
@@ -211,8 +219,8 @@ const checkAspectRatio = (a: number, b: number, epsilon: number) =>
  * @throws {TrueCropperOptionsError} if there are issues with the options.
  */
 export const prepareOptions = (options: ReturnType<typeof parseOptions>) => {
-  const aspectRatio = isNumber("aspectRatio", options.aspectRatio, 0);
-  const epsilon = isNumber("epsilon", options.epsilon, CONSTANTS.epsilon);
+  const aspectRatio = isNumber("aspectRatio", options.aspectRatio, 0, false, true);
+  const epsilon = isNumber("epsilon", options.epsilon, CONSTANTS.epsilon, true, true);
   const minSize = {
     width: isNumber("minSizeWidth", options.minSize.width, 0),
     height: isNumber("minSizeHeight", options.minSize.height, 0),
@@ -260,17 +268,6 @@ export const prepareOptions = (options: ReturnType<typeof parseOptions>) => {
         );
       }
     }
-    if (firstInitSize.width && firstInitSize.height) {
-      const calculatedAspectRatio = firstInitSize.width / firstInitSize.height;
-      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, epsilon)) {
-        throw TrueCropperOptionsError.aspectRatio(
-          "startSize",
-          calculatedAspectRatio,
-          aspectRatio,
-          epsilon,
-        );
-      }
-    }
     if (startSize.width && startSize.height) {
       const calculatedAspectRatio = startSize.width / startSize.height;
       if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, epsilon)) {
@@ -282,17 +279,53 @@ export const prepareOptions = (options: ReturnType<typeof parseOptions>) => {
         );
       }
     }
+    if (firstInitSize.width && firstInitSize.height) {
+      const calculatedAspectRatio = firstInitSize.width / firstInitSize.height;
+      if (!checkAspectRatio(calculatedAspectRatio, aspectRatio, epsilon)) {
+        throw TrueCropperOptionsError.aspectRatio(
+          "startSize",
+          calculatedAspectRatio,
+          aspectRatio,
+          epsilon,
+        );
+      }
+    }
+  }
+
+  if (!firstInitSize.centeredX && firstInitSize.width === 0) {
+    throw TrueCropperOptionsError.widthIsNull("firstInitSize");
+  }
+  if (!firstInitSize.centeredY && firstInitSize.height === 0) {
+    throw TrueCropperOptionsError.heightIsNull("firstInitSize");
+  }
+
+  if (!startSize.centeredX && startSize.width === 0) {
+    throw TrueCropperOptionsError.widthIsNull("startSize");
+  }
+  if (!startSize.centeredY && startSize.height === 0) {
+    throw TrueCropperOptionsError.heightIsNull("startSize");
+  }
+
+  if (startSize.unit === 'percent' && (startSize.x + startSize.width > 100 || startSize.y + startSize.height > 100)) {
+    throw TrueCropperOptionsError.badSizeOfPercent("startSize");
+  }
+  if (firstInitSize.unit === 'percent' && (firstInitSize.x + firstInitSize.width > 100 || firstInitSize.y + firstInitSize.height > 100)) {
+    throw TrueCropperOptionsError.badSizeOfPercent("firstInitSize");
+  }
+
+  if (minSize.unit === 'percent' && (minSize.width > 100 || minSize.height > 100)) {
+    throw TrueCropperOptionsError.badSizeOfPercent("minSize");
+  }
+
+  if (maxSize.unit === 'percent' && (maxSize.width > 100 || maxSize.height > 100)) {
+    throw TrueCropperOptionsError.badSizeOfPercent("maxSize");
   }
 
   return {
     aspectRatio,
     epsilon,
     allowFlip: isBoolean("allowFlip", options.allowFlip, true),
-    allowNewSelection: isBoolean(
-      "allowNewSelection",
-      options.allowNewSelection,
-      true,
-    ),
+    allowNewSelection: isBoolean("allowNewSelection", options.allowNewSelection, true,),
     allowMove: isBoolean("allowMove", options.allowMove, true),
     allowResize: isBoolean("allowResize", options.allowResize, true),
     returnMode: isSizeUnit("returnMode", options.returnMode, "real"),
