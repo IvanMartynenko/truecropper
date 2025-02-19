@@ -1,3 +1,3 @@
 import TrueCropper from "./trueCropper";
-import "../assets/trueCropper.scss";
+import "../assets/truecropper.scss";
 export default TrueCropper;

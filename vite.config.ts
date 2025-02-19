@@ -21,16 +21,16 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "trueCropper",
+      name: "truecropper",
       formats: ["es", "cjs", "umd", "iife"],
       fileName: (format) => {
-        return format === "umd" ? `trueCropper.js` : `trueCropper.${format}.js`;
+        return format === "umd" ? `truecropper.js` : `truecropper.${format}.js`;
       },
     },
     rollupOptions: {
       output: {
         assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") return "trueCropper.css";
+          if (assetInfo.name === "style.css") return "truecropper.css";
           return assetInfo.name;
         },
         // entryFileNames: (ChunkInfo) => {
