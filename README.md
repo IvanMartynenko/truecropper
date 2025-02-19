@@ -1,4 +1,4 @@
-## RealCropper.js
+## TrueCropper.js
 
 A vanilla JavaScript image cropper that's lightweight, awesome, and has absolutely zero dependencies.
 
