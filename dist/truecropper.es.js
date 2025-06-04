@@ -189,7 +189,7 @@ const q = (n) => {
 }, M = (n, t = void 0) => {
   const e = document.createElement("div");
   return e.className = n, t && t.appendChild(e), e;
-}, V = (n, t) => {
+}, A = (n, t) => {
   if (t.savedCoordinate < 0)
     return { flipped: !1, coordinate: null, size: null, point: 0.5 };
   const e = n < t.savedCoordinate, i = t.left !== e, s = t.savedCoordinate, h = Math.abs(t.savedCoordinate - n), o = Number(e);
@@ -200,7 +200,7 @@ const q = (n) => {
     point: o
   };
 }, Z = (n, t, e) => {
-  const i = V(n.x, t), s = V(n.y, e);
+  const i = A(n.x, t), s = A(n.y, e);
   return {
     flipped: { x: i.flipped, y: s.flipped },
     newBox: {
@@ -274,10 +274,10 @@ const q = (n) => {
 }) => {
   const s = { ...n };
   return e && (s.width > e.width && (s.width = e.width, s.height = i ? e.width / i : s.height), s.height > e.height && (s.width = i ? e.height * i : s.width, s.height = e.height)), t && (s.width < t.width && (s.width = t.width, s.height = i ? t.width / i : s.height), s.height < t.height && (s.width = i ? t.height * i : s.width, s.height = t.height)), s;
-}, j = (n, t, e) => {
+}, W = (n, t, e) => {
   const i = n * t;
   return { width: i, height: i / e };
-}, W = (n, t, e) => {
+}, j = (n, t, e) => {
   const i = n * t;
   return { width: i * e, height: i };
 }, Q = (n, t, e) => {
@@ -292,15 +292,15 @@ const q = (n) => {
     const a = i.width;
     i = { width: a, height: a / e };
   }
-  return n.coordinates.x + i.width * (1 - n.points.x) > t.width && (i = j(
+  return n.coordinates.x + i.width * (1 - n.points.x) > t.width && (i = W(
     t.width - n.coordinates.x,
     h,
     e
-  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = W(
+  )), n.coordinates.y + i.height * (1 - n.points.y) > t.height && (i = j(
     t.height - n.coordinates.y,
     o,
     e
-  )), n.coordinates.x - i.width * n.points.x < 0 && (i = j(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = W(n.coordinates.y, o, e)), i;
+  )), n.coordinates.x - i.width * n.points.x < 0 && (i = W(n.coordinates.x, h, e)), n.coordinates.y - i.height * n.points.y < 0 && (i = j(n.coordinates.y, o, e)), i;
 }, I = (n, t, e) => {
   const i = { ...n };
   return e && !i.width && !i.height && (e > 1 ? i.height = t.height : i.width = t.width), i.width || (i.width = e ? i.height * e : t.width), i.height || (i.height = e ? i.width / e : t.height), i;
@@ -804,16 +804,16 @@ function b(n, t, e) {
   return t;
 }
 const ct = (n, t) => {
-  var h, o, a, l, c, m, p, z, D, R, T, L, X, Y, A, H;
+  var h, o, a, l, c, m, p, z, R, D, T, L, X, H, Y, O;
   const e = t || {};
   if (typeof e != "object" || e === null)
     throw d.new("options", "object");
-  const i = (P, O) => {
+  const i = (P, V) => {
     const S = n[`${lt}${dt(P)}`];
     if (!S)
-      return O;
+      return V;
     const C = S.toLowerCase();
-    return C === "null" || C === "undefined" || C === "nil" ? O : S.trim().length !== 0 && !Number.isNaN(Number(S)) ? Number(S) : C === "true" ? !0 : C === "false" ? !1 : S;
+    return C === "null" || C === "undefined" || C === "nil" ? V : S.trim().length !== 0 && !Number.isNaN(Number(S)) ? Number(S) : C === "true" ? !0 : C === "false" ? !1 : S;
   }, s = {
     aspectRatio: i("aspectRatio", e.aspectRatio),
     epsilon: i("epsilon", e.epsilon),
@@ -835,16 +835,16 @@ const ct = (n, t) => {
     startSize: {
       x: i("startSizeX", (p = e.startSize) == null ? void 0 : p.x),
       y: i("startSizeY", (z = e.startSize) == null ? void 0 : z.y),
-      width: i("startSizeWidth", (D = e.startSize) == null ? void 0 : D.width),
-      height: i("startSizeHeight", (R = e.startSize) == null ? void 0 : R.height),
+      width: i("startSizeWidth", (R = e.startSize) == null ? void 0 : R.width),
+      height: i("startSizeHeight", (D = e.startSize) == null ? void 0 : D.height),
       unit: i("startSizeUnit", (T = e.startSize) == null ? void 0 : T.unit)
     },
     defaultSize: {
       x: i("defaultSizeX", (L = e.defaultSize) == null ? void 0 : L.x),
       y: i("defaultSizeY", (X = e.defaultSize) == null ? void 0 : X.y),
-      width: i("defaultSizeWidth", (Y = e.defaultSize) == null ? void 0 : Y.width),
-      height: i("defaultSizeHeight", (A = e.defaultSize) == null ? void 0 : A.height),
-      unit: i("defaultSizeUnit", (H = e.defaultSize) == null ? void 0 : H.unit)
+      width: i("defaultSizeWidth", (H = e.defaultSize) == null ? void 0 : H.width),
+      height: i("defaultSizeHeight", (Y = e.defaultSize) == null ? void 0 : Y.height),
+      unit: i("defaultSizeUnit", (O = e.defaultSize) == null ? void 0 : O.unit)
     }
   };
   return f(s.startSize.x) && f(s.startSize.y) && f(s.startSize.width) && f(s.startSize.height) && (s.startSize = s.defaultSize), s;
@@ -1162,25 +1162,25 @@ class pt {
     }
   }
   getImagePreview() {
-    if (this.status !== "ready")
-      return;
-    const t = document.createElement("canvas");
-    t.setAttribute("crossorigin", "anonymous");
-    const e = t.getContext("2d");
-    if (!e)
-      return;
-    const i = this.getValue("real");
-    return t.width = i.width, t.height = i.height, e.drawImage(
+    if (this.status !== "ready" || !this.htmlImg.complete || this.htmlImg.naturalWidth === 0 || this.htmlImg.naturalHeight === 0)
+      return null;
+    const t = this.getValue("real");
+    if (!t || t.width <= 0 || t.height <= 0 || t.x < 0 || t.y < 0 || t.x + t.width > this.htmlImg.naturalWidth || t.y + t.height > this.htmlImg.naturalHeight)
+      return null;
+    const e = document.createElement("canvas"), i = window.devicePixelRatio || 1;
+    e.width = t.width * i, e.height = t.height * i, e.style.width = `${t.width}px`, e.style.height = `${t.height}px`;
+    const s = e.getContext("2d");
+    return s ? (s.scale(i, i), s.drawImage(
       this.htmlImg,
-      i.x,
-      i.y,
-      i.width,
-      i.height,
+      t.x,
+      t.y,
+      t.width,
+      t.height,
       0,
       0,
-      i.width,
-      i.height
-    ), t;
+      t.width,
+      t.height
+    ), e) : null;
   }
   /**
    * Changes the image src.
@@ -1350,7 +1350,7 @@ class pt {
     });
   }
   initializeCropper() {
-    this.initializeObserver(), this.htmlImg.src && this.htmlImg.width !== 0 && this.htmlImg.height !== 0 && (this.preventDoubleLoad = this.htmlImg.src, this.initialize()), this.htmlImg.onload = () => {
+    this.initializeObserver(), this.htmlImg.src && this.htmlImg.complete && this.htmlImg.width !== 0 && this.htmlImg.height !== 0 && (this.preventDoubleLoad = this.htmlImg.src, this.initialize()), this.htmlImg.onload = () => {
       !this.htmlImg.src || this.preventDoubleLoad === this.htmlImg.src || (this.preventDoubleLoad = void 0, this.changeStatus(
         this.status === y.Waiting ? y.Waiting : y.Reloading
       ), this.observer.unobserve(this.htmlImg), this.initialize());

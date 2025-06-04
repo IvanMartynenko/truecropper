@@ -48,7 +48,7 @@ declare class TrueCropper {
     private preventDoubleLoad?;
     private callbacks;
     constructor(element: HTMLImageElement | string, optionsProps?: Partial<TrueCropperOptions>);
-    getImagePreview(): HTMLCanvasElement | undefined;
+    getImagePreview(): HTMLCanvasElement | null;
     /**
      * Changes the image src.
      * @param {String} src

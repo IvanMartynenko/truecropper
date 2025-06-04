@@ -117,19 +117,50 @@ export default class TrueCropper {
     }
   }
 
-  public getImagePreview() {
+  public getImagePreview(): HTMLCanvasElement | null {
     if (this.status !== "ready") {
-      return;
+      return null;
     }
+
+    if (!this.htmlImg.complete) {
+      return null;
+    }
+    if (this.htmlImg.naturalWidth === 0 || this.htmlImg.naturalHeight === 0) {
+      return null;
+    }
+
+    const val = this.getValue("real");
+    if (!val) {
+      return null;
+    }
+
+    if (
+      val.width <= 0 ||
+      val.height <= 0 ||
+      val.x < 0 ||
+      val.y < 0 ||
+      val.x + val.width > this.htmlImg.naturalWidth ||
+      val.y + val.height > this.htmlImg.naturalHeight
+    ) {
+      return null;
+    }
+
     const canvas = document.createElement("canvas");
-    canvas.setAttribute("crossorigin", "anonymous");
+    const dpr = window.devicePixelRatio || 1;
+
+    canvas.width  = val.width * dpr;
+    canvas.height = val.height * dpr;
+
+    canvas.style.width  = `${val.width}px`;
+    canvas.style.height = `${val.height}px`;
+
     const ctx = canvas.getContext("2d");
     if (!ctx) {
-      return;
+      return null;
     }
-    const val = this.getValue("real");
-    canvas.width = val.width;
-    canvas.height = val.height;
+
+    ctx.scale(dpr, dpr);
+
     ctx.drawImage(
       this.htmlImg,
       val.x,
@@ -139,11 +170,12 @@ export default class TrueCropper {
       0,
       0,
       val.width,
-      val.height,
+      val.height
     );
 
     return canvas;
   }
+
 
   /**
    * Changes the image src.
@@ -439,6 +471,7 @@ export default class TrueCropper {
     // Wait until image is loaded before proceeding
     if (
       this.htmlImg.src &&
+      this.htmlImg.complete &&
       this.htmlImg.width !== 0 &&
       this.htmlImg.height !== 0
     ) {

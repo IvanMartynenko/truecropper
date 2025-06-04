@@ -1,6 +1,6 @@
 {
   "name": "truecropper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A vanilla JavaScript image cropper that's lightweight, awesome, and has absolutely zero dependencies.",
   "author": "Ivan Martynenko <sieger1x2@gmail.com>",
   "homepage": "https://github.com/IvanMartynenko/truecropper",
